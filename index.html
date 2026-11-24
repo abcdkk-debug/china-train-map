@@ -128,6 +128,8 @@ input[type=range]{flex:1;accent-color:var(--red);min-height:40px}
     <div class="stat"><b id="statTotal">—</b><span>圖定班次</span></div>
     <div class="stat"><b id="statStations">—</b><span>車站</span></div>
   </div>
+  <span id="verBadge" title="以最後更新日期作為版本號" style="display:inline-flex;align-items:center;padding:4px 8px;border:1px solid var(--line);border-radius:999px;font-size:11px;font-weight:700;color:#94a3b8;white-space:nowrap;flex:0 0 auto">版本 —</span>
+  <script>(function(){try{var d=new Date(document.lastModified);if(isNaN(d.getTime()))return;var s=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).format(d);document.getElementById('verBadge').textContent='版本 '+s;}catch(e){}})();</script>
   <div class="clock"><div class="time" id="clock">--:--:--</div><div class="sub">Asia/Shanghai (UTC+8)</div></div>
 </header>
 
