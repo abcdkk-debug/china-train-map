@@ -609,20 +609,20 @@ function initLeaflet(){
 try{
   if(typeof L==="undefined")throw new Error("no leaflet");
   initLeaflet();
-}catch(e){buildFallback()}
+}catch(e){console.error("Leaflet 地圖初始化失敗，改用後備示意地圖：",e);buildFallback()}
 // ---------- State / UI ----------
 var isLive=true, playing=false, speed=60, simMinutes=720, selected=null, visibleTypes=null, showAll=false;
 var LANG="zh"; try{LANG=localStorage.getItem("ctm-lang")||"zh"}catch(e){}
 if(LANG!=="en")LANG="zh";
-function L(zh,en){return LANG==="en"?en:zh}
+function TT(zh,en){return LANG==="en"?en:zh}
 var TYPE_EN={G:"High-speed",D:"EMU",C:"Intercity",S:"Suburban",Z:"Express",T:"Fast",K:"Rapid",Y:"Tourist",N:"Conventional"};
 function TN(k){return LANG==="en"?(TYPE_EN[k]||TYPES[k].name):TYPES[k].name}
-function applyThemeLabel(){var b=document.getElementById("btnTheme");if(!b)return;var dark=document.documentElement.getAttribute("data-theme")==="dark"||(!document.documentElement.getAttribute("data-theme")&&window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches);b.textContent=dark?L("☀️ 淺色","☀️ Light"):L("🌙 深色","🌙 Dark")}
+function applyThemeLabel(){var b=document.getElementById("btnTheme");if(!b)return;var dark=document.documentElement.getAttribute("data-theme")==="dark"||(!document.documentElement.getAttribute("data-theme")&&window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches);b.textContent=dark?TT("☀️ 淺色","☀️ Light"):TT("🌙 深色","🌙 Dark")}
 
 var stationSel=null, lastBoardMinute=-1;
 function isTypeVisible(k){return visibleTypes===null||!!visibleTypes[k]}
 function filterKey(){return visibleTypes===null?"all":TYPE_ORDER.filter(function(k){return visibleTypes[k]}).join("")}
-function filterLabel(){return visibleTypes===null?L("所有車種","All types"):TYPE_ORDER.filter(function(k){return visibleTypes[k]}).map(function(k){return k+" "+TN(k)}).join(" + ")}
+function filterLabel(){return visibleTypes===null?TT("所有車種","All types"):TYPE_ORDER.filter(function(k){return visibleTypes[k]}).map(function(k){return k+" "+TN(k)}).join(" + ")}
 function setFilter(type){
   var present={};TRAINS.forEach(function(tr){present[tr.type]=true});
   var presentKeys=TYPE_ORDER.filter(function(k){return present[k]});
@@ -704,36 +704,28 @@ document.getElementById("search").addEventListener("input",function(){lastListKe
   function runSearch(){
     var a=resolveStation(fromEl.value), b=resolveStation(toEl.value);
     if(a<0||b<0){
-      resEl.innerHTML='<p class="od-msg">'+L("搵唔到","Station not found: ")+(a<0?L("起點","origin"):L("終點","destination"))+' <b>'+(a<0?fromEl.value:toEl.value)+'</b>'+L(" — 試下打完整站名，或者喺下拉清單揀返個站。"," — try the full station name or pick from the suggestions.")+'</p>';
+      resEl.innerHTML='<p class="od-msg">'+TT("搵唔到","Station not found: ")+(a<0?TT("起點","origin"):TT("終點","destination"))+' <b>'+(a<0?fromEl.value:toEl.value)+'</b>'+TT(" — 試下打完整站名，或者喺下拉清單揀返個站。"," — try the full station name or pick from the suggestions.")+'</p>';
       return;
     }
-    if(a===b){resEl.innerHTML='<p class="od-msg">'+L("起點同終點係同一個站，揀兩個唔同嘅站先搜到車。","Origin and destination are the same station — pick two different stations.")+'</p>';return}
+    if(a===b){resEl.innerHTML='<p class="od-msg">'+TT("起點同終點係同一個站，揀兩個唔同嘅站先搜到車。","Origin and destination are the same station — pick two different stations.")+'</p>';return}
     var dayIdx=chinaDate().getDay();
     var res=directTrains(a,b,dayIdx);
     if(!res.length){
-      resEl.innerHTML='<p class="od-msg">'+L("今日（星期","Today (")+(LANG==="en"?["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]:["日","一","二","三","四","五","六"])[dayIdx]+L("）冇直達車由 ",") no direct trains from ")+'<b>'+ST[a][0]+'</b>'+L(" 去 "," to ")+'<b>'+ST[b][0]+'</b>'+L("。可能要轉車，或者試下調轉方向、揀過第二個站。",". You may need a connection, or try the reverse direction.")+'</p>';
+      resEl.innerHTML='<p class="od-msg">'+TT("今日（星期","Today (")+(LANG==="en"?["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]:["日","一","二","三","四","五","六"])[dayIdx]+TT("）冇直達車由 ",") no direct trains from ")+'<b>'+ST[a][0]+'</b>'+TT(" 去 "," to ")+'<b>'+ST[b][0]+'</b>'+TT("。可能要轉車，或者試下調轉方向、揀過第二個站。",". You may need a connection, or try the reverse direction.")+'</p>';
       return;
     }
     var shown=res;
     var rows=shown.map(function(r){
       return '<button type="button" class="board-row" data-no="'+r.tr.no+'"><span class="b-time">'+fmtT(r.dep)+'</span><span class="b-no"><i style="background:'+TYPES[r.tr.type].color+'"></i>'+r.tr.no+'</span><span class="b-to">→ '+ST[b][0]+" "+fmtT(r.arr)+'</span><span class="b-in">'+durTxt(r.arr-r.dep)+" · "+TN(r.tr.type)+'</span></button>';
     }).join("");
-    resEl.innerHTML='<div class="od-head">'+ST[a][0]+" → "+ST[b][0]+L("：今日共 "," : ")+res.length+L(" 班直達車，按起點開出時間排序。撳一班車睇詳情。"," direct trains today, sorted by departure. Tap one for details.")+"</div>"+'<div class="board-list">'+rows+"</div>";
+    resEl.innerHTML='<div class="od-head">'+ST[a][0]+" → "+ST[b][0]+TT("：今日共 "," : ")+res.length+TT(" 班直達車，按起點開出時間排序。撳一班車睇詳情。"," direct trains today, sorted by departure. Tap one for details.")+"</div>"+'<div class="board-list">'+rows+"</div>";
     resEl.querySelectorAll(".board-row").forEach(function(btn){btn.addEventListener("click",function(){selectTrain(btn.dataset.no,true)})});
   }
   document.getElementById("odSearch").addEventListener("click",runSearch);
   [fromEl,toEl].forEach(function(el){el.addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();runSearch()}})});
 })();
 
-function trainShareUrl(no){return location.origin+location.pathname+"?train="+encodeURIComponent(no)}
-function copyTrainLink(no){
-  var url=trainShareUrl(no);
-  var msg=document.getElementById("copyMsg");
-  function done(ok){if(msg)msg.textContent=ok?L("已複製：","Copied: ")+url:L("複製失敗，請手動複製：","Copy failed, please copy manually: ")+url}
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(function(){done(true)},function(){fallback()})}else fallback();
-  function fallback(){try{var ta=document.createElement("textarea");ta.value=url;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();var ok=document.execCommand("copy");document.body.removeChild(ta);done(ok)}catch(e){done(false)}}
-}
-function updateBadge(){var b=document.getElementById("liveBadge");b.innerHTML=isLive?('<span class="dot"></span> '+L('LIVE · 中國時間','LIVE · China time')):('<span class="dot" style="background:#d97706;animation:none"></span> '+L('模擬時間 · 非 LIVE','Simulated · not LIVE'));}
+function updateBadge(){var b=document.getElementById("liveBadge");b.innerHTML=isLive?('<span class="dot"></span> '+TT('LIVE · 中國時間','LIVE · China time')):('<span class="dot" style="background:#d97706;animation:none"></span> '+TT('模擬時間 · 非 LIVE','Simulated · not LIVE'));}
 function drawRoute(tr){
   if(fallback)return; // fallback draws route inside drawFallback
   routeGroup.clearLayers();
@@ -773,19 +765,38 @@ function refreshDetail(force){
   var local=pos?pos.local:simMinutes;
   var rows=tr.stops.map(function(s){
     var passed=local>s.t, isNext=pos&&pos.next&&s===pos.next;
-    return '<tr class="'+(isNext?"next":(passed?"passed":""))+'"><td>'+ST[s.s][0]+'</td><td style="font-family:monospace">'+fmtT(s.t)+'</td><td>'+(isNext?L("下一站","Next stop"):(passed?L("已過","Passed"):""))+'</td></tr>';
+    return '<tr class="'+(isNext?"next":(passed?"passed":""))+'"><td>'+ST[s.s][0]+'</td><td style="font-family:monospace">'+fmtT(s.t)+'</td><td>'+(isNext?TT("下一站","Next stop"):(passed?TT("已過","Passed"):""))+'</td></tr>';
   }).join("");
   var where;
-  if(st==="run"&&pos)where=L("而家喺 <b>","Now between <b>")+ST[pos.prev.s][0]+" → "+ST[pos.next.s][0]+L("</b> 之間，呢段行咗 ","</b>, ")+Math.round(pos.segP*100)+L("% ，預定 ","% through this segment, due ")+fmtT(pos.next.t)+L(" 到 "," at ")+ST[pos.next.s][0]+L("。",".");
-  else if(st==="wait")where=L("未開出，預定 ","Not yet departed, scheduled ")+fmtT(tr.dep)+L(" 由 "," from ")+tr.from+L(" 開出。",".");
-  else if(st==="done")where=L("已到達終點 ","Arrived at ")+tr.to+" ("+fmtT(tr.arr)+")"+L("。",".");
-  else where=L("今日唔開行；開行日逢星期","Not running today; runs on ")+maskDays(tr.mask)+L("。",".");
+  if(st==="run"&&pos)where=TT("而家喺 <b>","Now between <b>")+ST[pos.prev.s][0]+" → "+ST[pos.next.s][0]+TT("</b> 之間，呢段行咗 ","</b>, ")+Math.round(pos.segP*100)+TT("% ，預定 ","% through this segment, due ")+fmtT(pos.next.t)+TT(" 到 "," at ")+ST[pos.next.s][0]+TT("。",".");
+  else if(st==="wait")where=TT("未開出，預定 ","Not yet departed, scheduled ")+fmtT(tr.dep)+TT(" 由 "," from ")+tr.from+TT(" 開出。",".");
+  else if(st==="done")where=TT("已到達終點 ","Arrived at ")+tr.to+" ("+fmtT(tr.arr)+")"+TT("。",".");
+  else where=TT("今日唔開行；開行日逢星期","Not running today; runs on ")+maskDays(tr.mask)+TT("。",".");
   detailEl.className="detail open";
-  detailEl.innerHTML='<button type="button" class="detail-close" id="detailClose" aria-label="關閉詳情，返去全國總覽">✕</button><h3><span style="color:'+TYPES[tr.type].color+'">●</span> '+tr.no+" · "+TN(tr.type)+'</h3><div class="sub">'+tr.from+" → "+tr.to+" ｜ "+fmtT(tr.dep)+L(" 開 · "," dep · ")+fmtT(tr.arr)+L(" 到 ｜ 全程 "," arr ｜ Journey ")+Math.floor((tr.arr-tr.dep)/60)+L(" 小時 "," h ")+Math.round((tr.arr-tr.dep)%60)+L(" 分鐘 ｜ 停 "," min ｜ ")+tr.stops.length+L(' 站',' stops')+'<br>'+where+'</div><div class="btn-row" style="margin:10px 0 4px"><button type="button" class="btn primary" id="btnCopyLink">'+L("🔗 複製連結","🔗 Copy link")+'</button><span class="copy-msg" id="copyMsg" aria-live="polite"></span></div><div class="progress"><i style="width:'+(pos?Math.round(pos.overall*100):(st==="done"?100:0))+'%;background:'+TYPES[tr.type].color+'"></i></div><div class="stop-wrap"><table class="stop-table"><tr><th>'+L("停站","Stop")+'</th><th>'+L("時刻","Time")+'</th><th>'+L("狀態","Status")+'</th></tr>'+rows+"</table></div>"+(tr.arr>=1440?'<div class="sub">'+L("⁺¹ = 次日凌晨到達。","⁺¹ = arrives after midnight.")+'</div>':"");
+  detailEl.innerHTML='<button type="button" class="detail-close" id="detailClose" aria-label="關閉詳情，返去全國總覽">✕</button><h3><span style="color:'+TYPES[tr.type].color+'">●</span> '+tr.no+" · "+TN(tr.type)+'</h3><div class="sub">'+tr.from+" → "+tr.to+" ｜ "+fmtT(tr.dep)+TT(" 開 · "," dep · ")+fmtT(tr.arr)+TT(" 到 ｜ 全程 "," arr ｜ Journey ")+Math.floor((tr.arr-tr.dep)/60)+TT(" 小時 "," h ")+Math.round((tr.arr-tr.dep)%60)+TT(" 分鐘 ｜ 停 "," min ｜ ")+tr.stops.length+TT(' 站',' stops')+'<br>'+where+'</div><div class="progress"><i style="width:'+(pos?Math.round(pos.overall*100):(st==="done"?100:0))+'%;background:'+TYPES[tr.type].color+'"></i></div><div class="stop-wrap"><table class="stop-table"><tr><th>'+TT("停站","Stop")+'</th><th>'+TT("時刻","Time")+'</th><th>'+TT("狀態","Status")+'</th></tr>'+rows+"</table></div>"+(tr.arr>=1440?'<div class="sub">'+TT("⁺¹ = 次日凌晨到達。","⁺¹ = arrives after midnight.")+'</div>':"")+'<div class="btn-row"><button type="button" class="btn" id="btnCopyLink">'+TT("🔗 複製連結","🔗 Copy link")+'</button><span class="copy-msg" id="copyMsg" role="status"></span></div>';
   var closeBtn=document.getElementById("detailClose");
   if(closeBtn)closeBtn.addEventListener("click",function(){deselectTrain()});
-  var cpBtn=document.getElementById("btnCopyLink");
-  if(cpBtn)cpBtn.addEventListener("click",function(){copyTrainLink(tr.no)});
+  var copyBtn=document.getElementById("btnCopyLink");
+  if(copyBtn)copyBtn.addEventListener("click",function(){copyTrainLink(tr.no)});
+}
+// ---------- Share link for a train (?train=<車次>) ----------
+function trainShareUrl(no){
+  var base=location.href.split(/[?#]/)[0];
+  return base+"?train="+encodeURIComponent(no);
+}
+function copyTrainLink(no){
+  var url=trainShareUrl(no), msg=document.getElementById("copyMsg");
+  function done(){if(msg)msg.textContent=TT("已複製：","Copied: ")+url}
+  function fail(){if(msg)msg.textContent=TT("自動複製唔到，請手動複製呢條連結：","Auto-copy failed — please copy this link manually: ")+url}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(url).then(done,fail);
+  }else{
+    var ta=document.createElement("textarea");
+    ta.value=url;ta.style.position="fixed";ta.style.opacity="0";
+    document.body.appendChild(ta);ta.focus();ta.select();
+    try{if(document.execCommand("copy"))done();else fail()}catch(e){fail()}
+    document.body.removeChild(ta);
+  }
 }
 // ---------- Station departure board ----------
 function refreshStationBoard(){
@@ -795,11 +806,11 @@ function refreshStationBoard(){
   var entries=stationBoard(idx,simMinutes,todayDay,240);
   var rows=entries.slice(0,40).map(function(en){
     var d=en.d, mins=Math.round(en.abs-simMinutes);
-    var inTxt=mins<=1?L("即將開出","Departing soon"):(mins<60?L("約 "+mins+" 分鐘後","in ~"+mins+" min"):L("約 "+Math.floor(mins/60)+" 小時"+(mins%60?" "+(mins%60)+" 分":"")+"後","in ~"+Math.floor(mins/60)+" h"+(mins%60?" "+(mins%60)+" min":"")));
-    return '<button type="button" class="board-row" data-no="'+d.no+'"><span class="b-time">'+fmt(en.abs)+(en.abs>=1440?" ⁺¹":"")+'</span><span class="b-no"><i style="background:'+TYPES[d.type].color+'"></i>'+d.no+'</span><span class="b-to">'+L("往 ","To ")+d.to+'</span><span class="b-in">'+inTxt+'</span></button>';
+    var inTxt=mins<=1?TT("即將開出","Departing soon"):(mins<60?TT("約 "+mins+" 分鐘後","in ~"+mins+" min"):TT("約 "+Math.floor(mins/60)+" 小時"+(mins%60?" "+(mins%60)+" 分":"")+"後","in ~"+Math.floor(mins/60)+" h"+(mins%60?" "+(mins%60)+" min":"")));
+    return '<button type="button" class="board-row" data-no="'+d.no+'"><span class="b-time">'+fmt(en.abs)+(en.abs>=1440?" ⁺¹":"")+'</span><span class="b-no"><i style="background:'+TYPES[d.type].color+'"></i>'+d.no+'</span><span class="b-to">'+TT("往 ","To ")+d.to+'</span><span class="b-in">'+inTxt+'</span></button>';
   }).join("");
   panel.className="detail open";
-  panel.innerHTML='<button type="button" class="detail-close" id="stationClose" aria-label="關閉出發板">✕</button><h3>'+ST[idx][0]+L('站 · 出發板',' Station · Departures')+'</h3><div class="sub">'+L("顯示時間 ","From ")+''+fmt(simMinutes)+L(' 起 4 小時內，喺呢個站開出／經過嘅列車（按時刻表推算），共 ',' — trains departing or passing this station in the next 4 hours (timetable estimate), ')+entries.length+L(' 班',' trains')+(entries.length>40?L("，顯示首 40 班",", showing first 40"):"")+L('。撳一班車可以跳去睇佢嘅詳情。','. Tap a train for details.')+'</div>'+(rows?'<div class="board-list">'+rows+"</div>":'<p style="color:var(--muted);font-size:13px;line-height:1.6">'+L("呢段時間冇車喺呢個站開出／經過 — 試下將時間拉去日頭，或者揀個大站（例如武漢、廣州南）。","No trains depart or pass here in this window — try daytime hours or a major station.")+'</p>');
+  panel.innerHTML='<button type="button" class="detail-close" id="stationClose" aria-label="關閉出發板">✕</button><h3>'+ST[idx][0]+TT('站 · 出發板',' Station · Departures')+'</h3><div class="sub">'+TT("顯示時間 ","From ")+''+fmt(simMinutes)+TT(' 起 4 小時內，喺呢個站開出／經過嘅列車（按時刻表推算），共 ',' — trains departing or passing this station in the next 4 hours (timetable estimate), ')+entries.length+TT(' 班',' trains')+(entries.length>40?TT("，顯示首 40 班",", showing first 40"):"")+TT('。撳一班車可以跳去睇佢嘅詳情。','. Tap a train for details.')+'</div>'+(rows?'<div class="board-list">'+rows+"</div>":'<p style="color:var(--muted);font-size:13px;line-height:1.6">'+TT("呢段時間冇車喺呢個站開出／經過 — 試下將時間拉去日頭，或者揀個大站（例如武漢、廣州南）。","No trains depart or pass here in this window — try daytime hours or a major station.")+'</p>');
   document.getElementById("stationClose").addEventListener("click",function(){closeStation()});
   panel.querySelectorAll(".board-row").forEach(function(b){b.addEventListener("click",function(){selectTrain(b.dataset.no,true)})});
 }
@@ -864,17 +875,17 @@ function renderStats(){
   var hl="";for(h=0;h<24;h++)hl+="<span>"+(h%6===0?h:"")+"</span>";
   var dayNames=LANG==="en"?["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]:["日","一","二","三","四","五","六"];
   var rows=statsCache.top.map(function(e,i){
-    return '<button type="button" class="board-row rank-row" data-stn="'+e.idx+'"><span class="r-rank">'+(i+1)+'</span><span class="b-to">'+ST[e.idx][0]+L('站','')+'</span><span class="b-in">'+e.n.toLocaleString("en-US")+L(' 班次',' trains')+'</span></button>';
+    return '<button type="button" class="board-row rank-row" data-stn="'+e.idx+'"><span class="r-rank">'+(i+1)+'</span><span class="b-to">'+ST[e.idx][0]+TT('站','')+'</span><span class="b-in">'+e.n.toLocaleString("en-US")+TT(' 班次',' trains')+'</span></button>';
   }).join("");
   panel.className="detail open";
-  panel.innerHTML='<button type="button" class="detail-close" id="statsClose" aria-label="關閉全國數據">✕</button><h3>'+L('全國數據','National data')+'</h3>'
-    +'<div class="sub">'+L('星期','')+dayNames[todayDay]+L('（而家顯示緊嗰日）全日推算，數字由頁面入面嘅時刻表即場計出嚟。',' — full-day estimate for the displayed day, computed live from the timetable in this page.')+'</div>'
-    +'<h4 class="stats-h">'+L('24 小時流量 — 每個整點有幾多班車行駛中','24-hour flow — trains running at each hour')+'</h4>'
+  panel.innerHTML='<button type="button" class="detail-close" id="statsClose" aria-label="關閉全國數據">✕</button><h3>'+TT('全國數據','National data')+'</h3>'
+    +'<div class="sub">'+TT('星期','')+dayNames[todayDay]+TT('（而家顯示緊嗰日）全日推算，數字由頁面入面嘅時刻表即場計出嚟。',' — full-day estimate for the displayed day, computed live from the timetable in this page.')+'</div>'
+    +'<h4 class="stats-h">'+TT('24 小時流量 — 每個整點有幾多班車行駛中','24-hour flow — trains running at each hour')+'</h4>'
     +'<div class="stats-chart">'+cols+'</div><div class="sc-hours">'+hl+'</div>'
-    +'<div class="sub">'+L('高峰 ','Peak ')+fmt(peakH*60)+L('：約 ',' : ~')+max.toLocaleString("en-US")+L(' 班；',' trains; ')+'<b style="color:var(--red)">'+L('紅色','red')+'</b>'+L('係顯示時間所屬嗰個鐘（',' marks the displayed hour (')+fmt(nowH*60)+L(' 時段，約 ',' slot, ~')+hours[nowH].toLocaleString("en-US")+L(' 班）。',' trains).')+'</div>'
-    +'<h4 class="stats-h">'+L('最繁忙車站 Top 10 — 當日停站班次','Busiest stations Top 10 — stops today')+'</h4>'
+    +'<div class="sub">'+TT('高峰 ','Peak ')+fmt(peakH*60)+TT('：約 ',' : ~')+max.toLocaleString("en-US")+TT(' 班；',' trains; ')+'<b style="color:var(--red)">'+TT('紅色','red')+'</b>'+TT('係顯示時間所屬嗰個鐘（',' marks the displayed hour (')+fmt(nowH*60)+TT(' 時段，約 ',' slot, ~')+hours[nowH].toLocaleString("en-US")+TT(' 班）。',' trains).')+'</div>'
+    +'<h4 class="stats-h">'+TT('最繁忙車站 Top 10 — 當日停站班次','Busiest stations Top 10 — stops today')+'</h4>'
     +'<div class="board-list" style="max-height:none">'+rows+'</div>'
-    +'<div class="sub">'+L('撳一個站，會飛去嗰個站並開佢嘅出發板。','Tap a station to fly there and open its departure board.')+'</div>';
+    +'<div class="sub">'+TT('撳一個站，會飛去嗰個站並開佢嘅出發板。','Tap a station to fly there and open its departure board.')+'</div>';
   document.getElementById("statsClose").addEventListener("click",function(){closeStats()});
   panel.querySelectorAll(".rank-row").forEach(function(b){b.addEventListener("click",function(){
     var idx=+b.dataset.stn;
@@ -908,7 +919,7 @@ function refreshStatsNow(){
 function maskDays(mask){
   var names=LANG==="en"?["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]:["日","一","二","三","四","五","六"],out=[];
   for(var d=0;d<7;d++)if((mask>>d)&1)out.push(names[d]);
-  return out.length===7?L("一至日（每日）","Daily"):out.join(LANG==="en"?", ":"、");
+  return out.length===7?TT("一至日（每日）","Daily"):out.join(LANG==="en"?", ":"、");
 }
 function matchesQuery(tr,q){
   if(!q)return true;
@@ -938,18 +949,18 @@ function renderList(){
   var total=items.length, shown=items.slice(0,100);
   var runningTotal=RUNNING.length, allRunningTotal=ALL_RUNNING.length;
   listHead.innerHTML=q
-    ?(L("搜尋「","Search \u201C")+q+L("」：","\u201D: ")+total+L(" 班符合"," trains match")+(total>100?L("，顯示首 100 班",", showing first 100"):"")+L("（包括未開出／已到達）"," (incl. not departed / arrived)"))
+    ?(TT("搜尋「","Search \u201C")+q+TT("」：","\u201D: ")+total+TT(" 班符合"," trains match")+(total>100?TT("，顯示首 100 班",", showing first 100"):"")+TT("（包括未開出／已到達）"," (incl. not departed / arrived)"))
     :(showAll
-      ?(L("全部班次（","All trains (")+filterLabel()+L("）："," ) : ")+total+L(" 班，顯示首 100 班"," trains, showing first 100"))
-      :(L("行駛中 ","Running ")+runningTotal.toLocaleString("en-US")+L(" 班"," trains")+(visibleTypes!==null?L("（已篩選："," (filtered: ")+filterLabel()+L("；全部車種共 ","; all types ")+allRunningTotal.toLocaleString("en-US")+L(" 班）"," )"):"")+(total>100?L("，顯示首 100 班",", showing first 100"):"")));
-  var pillTxt={run:'<span class="pill run">'+L("行駛中","Running")+'</span>',wait:'<span class="pill wait">'+L("未開出","Not departed")+'</span>',done:'<span class="pill done">'+L("已到達","Arrived")+'</span>',off:'<span class="pill off">'+L("今日不開行","Not today")+'</span>'};
+      ?(TT("全部班次（","All trains (")+filterLabel()+TT("）："," ) : ")+total+TT(" 班，顯示首 100 班"," trains, showing first 100"))
+      :(TT("行駛中 ","Running ")+runningTotal.toLocaleString("en-US")+TT(" 班"," trains")+(visibleTypes!==null?TT("（已篩選："," (filtered: ")+filterLabel()+TT("；全部車種共 ","; all types ")+allRunningTotal.toLocaleString("en-US")+TT(" 班）"," )"):"")+(total>100?TT("，顯示首 100 班",", showing first 100"):"")));
+  var pillTxt={run:'<span class="pill run">'+TT("行駛中","Running")+'</span>',wait:'<span class="pill wait">'+TT("未開出","Not departed")+'</span>',done:'<span class="pill done">'+TT("已到達","Arrived")+'</span>',off:'<span class="pill off">'+TT("今日不開行","Not today")+'</span>'};
   var html=shown.map(function(it){
     var tr=it.tr,pos=posAt(tr,simMinutes,todayDay);
-    var meta=it.st==="run"&&pos?(ST[pos.prev.s][0]+" → "+ST[pos.next.s][0]+L(" · 預定 "," · due ")+fmtT(pos.next.t)+L(" 到下一站"," at next stop"))
-      :(it.st==="wait"?L("預定 ","Departs ")+fmtT(tr.dep)+L(" 開出",""):(it.st==="done"?L("已於 ","Arrived ")+fmtT(tr.arr)+L(" 到達 "," at ")+tr.to:L("逢星期","Runs ")+maskDays(tr.mask)+L("開行","")));
-    return '<button class="train-card'+(selected===tr.no?" selected":"")+'" data-no="'+tr.no+'"><div class="tc-top"><span class="tc-no"><i style="background:'+TYPES[tr.type].color+'"></i>'+tr.no+'</span>'+pillTxt[it.st]+'</div><div class="tc-route">'+tr.from+" → "+tr.to+'</div><div class="tc-meta">'+fmtT(tr.dep)+" – "+fmtT(tr.arr)+" · "+TN(tr.type)+L(" · 停 "," · ")+tr.stops.length+L(" 站"," stops")+"<br>"+meta+"</div>"+(pos?'<div class="progress"><i style="width:'+Math.round(pos.overall*100)+'%;background:'+TYPES[tr.type].color+'"></i></div>':"")+"</button>";
+    var meta=it.st==="run"&&pos?(ST[pos.prev.s][0]+" → "+ST[pos.next.s][0]+TT(" · 預定 "," · due ")+fmtT(pos.next.t)+TT(" 到下一站"," at next stop"))
+      :(it.st==="wait"?TT("預定 ","Departs ")+fmtT(tr.dep)+TT(" 開出",""):(it.st==="done"?TT("已於 ","Arrived ")+fmtT(tr.arr)+TT(" 到達 "," at ")+tr.to:TT("逢星期","Runs ")+maskDays(tr.mask)+TT("開行","")));
+    return '<button class="train-card'+(selected===tr.no?" selected":"")+'" data-no="'+tr.no+'"><div class="tc-top"><span class="tc-no"><i style="background:'+TYPES[tr.type].color+'"></i>'+tr.no+'</span>'+pillTxt[it.st]+'</div><div class="tc-route">'+tr.from+" → "+tr.to+'</div><div class="tc-meta">'+fmtT(tr.dep)+" – "+fmtT(tr.arr)+" · "+TN(tr.type)+TT(" · 停 "," · ")+tr.stops.length+TT(" 站"," stops")+"<br>"+meta+"</div>"+(pos?'<div class="progress"><i style="width:'+Math.round(pos.overall*100)+'%;background:'+TYPES[tr.type].color+'"></i></div>':"")+"</button>";
   }).join("");
-  listEl.innerHTML=html||'<p style="color:var(--muted);font-size:13px;padding:8px">'+L("冇符合嘅班次。試下改搜尋、車種，或者撳「顯示埋未開出／已到達」。","No matching trains. Try a different search or type, or include not-departed / arrived trains.")+'</p>';
+  listEl.innerHTML=html||'<p style="color:var(--muted);font-size:13px;padding:8px">'+TT("冇符合嘅班次。試下改搜尋、車種，或者撳「顯示埋未開出／已到達」。","No matching trains. Try a different search or type, or include not-departed / arrived trains.")+'</p>';
   listEl.querySelectorAll(".train-card").forEach(function(c){c.addEventListener("click",function(){selectTrain(c.dataset.no,true)})});
 }
 var lastDetailMinute=-1;
@@ -968,7 +979,7 @@ function render(){
   // Map + list show only the types picked in the filter; legend/overall counts stay on ALL_RUNNING.
   RUNNING=ALL_RUNNING.filter(function(it){return isTypeVisible(it.tr.type)});
   document.getElementById("statRunning").textContent=RUNNING.length.toLocaleString("en-US");
-  document.getElementById("statRunningLabel").textContent=visibleTypes===null?L("行駛中","Running"):L("顯示中（已篩選）","Shown (filtered)");
+  document.getElementById("statRunningLabel").textContent=visibleTypes===null?TT("行駛中","Running"):TT("顯示中（已篩選）","Shown (filtered)");
   countSig=ALL_RUNNING.length+"/"+RUNNING.length+"|"+filterKey()+"|"+TYPE_ORDER.map(function(k){return typeCounts[k]||0}).join(",");
   TYPE_ORDER.forEach(function(k){var el=document.getElementById("lg-"+k);if(el)el.textContent=(typeCounts[k]||0).toLocaleString("en-US")});
   if(fallback)drawFallback();
@@ -990,29 +1001,29 @@ if(window.SHAPES_DATA)buildShapes();
 function setText(id,txt){var e=document.getElementById(id);if(e)e.textContent=txt}
 function applyLang(){
   document.documentElement.lang=LANG==="en"?"en":"zh-Hant-HK";
-  setText("uiTitle",L("中國列車 · 全國推算位置地圖","China Trains · Live Map (Estimated)"));
-  setText("uiSubtitle",L("時刻表插值推算 · 非官方 GPS","Timetable interpolation · not official GPS"));
-  setText("btnLang",LANG==="en"?"中文":"EN"); setText("statTotalLabel",L("圖定班次","Scheduled")); setText("statStationsLabel",L("車站","Stations"));
-  var vb=document.getElementById("verBadge"); if(vb&&vb.dataset.date){vb.textContent=L("版本 ","Version ")+vb.dataset.date}
-  document.querySelectorAll(".controls h2").forEach(function(h,i){h.textContent=i===0?L("時間控制","Time controls"):L("直達車搜尋","Direct trains")});
-  setText("btnLive",L("回到 LIVE","Back to LIVE"));
-  var bp=document.getElementById("btnPlay"); if(bp)bp.textContent=playing?L("⏸ 暫停","⏸ Pause"):L("▶ 播放全日","▶ Play full day");
-  var se=document.getElementById("search"); if(se)se.placeholder=L("搜尋車次或車站，例如 G1、K105、香港西九龍…","Search train or station, e.g. G1, K105…");
-  setText("chipShowAll",L("顯示埋未開出／已到達","Include not-departed / arrived"));
+  setText("uiTitle",TT("中國列車 · 全國推算位置地圖","China Trains · Live Map (Estimated)"));
+  setText("uiSubtitle",TT("時刻表插值推算 · 非官方 GPS","Timetable interpolation · not official GPS"));
+  setText("btnLang",LANG==="en"?"中文":"EN"); setText("statTotalLabel",TT("圖定班次","Scheduled")); setText("statStationsLabel",TT("車站","Stations"));
+  var vb=document.getElementById("verBadge"); if(vb&&vb.dataset.date){vb.textContent=TT("版本 ","Version ")+vb.dataset.date}
+  document.querySelectorAll(".controls h2").forEach(function(h,i){h.textContent=i===0?TT("時間控制","Time controls"):TT("直達車搜尋","Direct trains")});
+  setText("btnLive",TT("回到 LIVE","Back to LIVE"));
+  var bp=document.getElementById("btnPlay"); if(bp)bp.textContent=playing?TT("⏸ 暫停","⏸ Pause"):TT("▶ 播放全日","▶ Play full day");
+  var se=document.getElementById("search"); if(se)se.placeholder=TT("搜尋車次或車站，例如 G1、K105、香港西九龍…","Search train or station, e.g. G1, K105…");
+  setText("chipShowAll",TT("顯示埋未開出／已到達","Include not-departed / arrived"));
   var of=document.getElementById("odFrom"), ot=document.getElementById("odTo");
-  if(of)of.placeholder=L("起點站，如 武漢","From, e.g. Wuhan");
-  if(ot)ot.placeholder=L("終點站，如 廣州南","To, e.g. Guangzhou South");
-  setText("odSearch",L("搜尋直達車","Search direct trains"));
-  var bs=document.getElementById("btnStats"); if(bs)bs.textContent=L("📊 全國數據 · 流量曲線＋最繁忙車站","📊 National data · Flow & busiest stations");
-  var mf=document.querySelector(".mf-label"); if(mf)mf.textContent=L("只顯示：","Show:");
-  document.querySelectorAll("[data-ftype]").forEach(function(c){var k=c.dataset.ftype; if(k==="all")c.textContent=L("全部","All"); else {var dot=c.querySelector("i"); c.textContent=""; if(dot)c.appendChild(dot); c.appendChild(document.createTextNode(k+" "+TN(k)));}});
-  var lh=document.querySelector(".legend-head span"); if(lh)lh.textContent=L("車種圖例","Train types");
-  var cap=document.querySelector(".legend .cap"); if(cap)cap.textContent=L("數字 = 該車種而家行駛中班次","Number = trains of this type now running");
-  setText("drawerHandleTxt",L("收起面板","Hide panel")); var uh=document.getElementById("uiHint"); if(uh)uh.innerHTML=L("凌晨高鐵大多收車，但 K／Z／T 臥鋪車正橫越全國 — 將時間拉去 <b>03:00</b>，就睇到普速車點樣撐起成張夜間地圖。","Most high-speed trains stop overnight, but K/Z/T sleeper trains cross the country — drag the time to <b>03:00</b> to see conventional trains carrying the night map.");
+  if(of)of.placeholder=TT("起點站，如 武漢","From, e.g. Wuhan");
+  if(ot)ot.placeholder=TT("終點站，如 廣州南","To, e.g. Guangzhou South");
+  setText("odSearch",TT("搜尋直達車","Search direct trains"));
+  var bs=document.getElementById("btnStats"); if(bs)bs.textContent=TT("📊 全國數據 · 流量曲線＋最繁忙車站","📊 National data · Flow & busiest stations");
+  var mf=document.querySelector(".mf-label"); if(mf)mf.textContent=TT("只顯示：","Show:");
+  document.querySelectorAll("[data-ftype]").forEach(function(c){var k=c.dataset.ftype; if(k==="all")c.textContent=TT("全部","All"); else {var dot=c.querySelector("i"); c.textContent=""; if(dot)c.appendChild(dot); c.appendChild(document.createTextNode(k+" "+TN(k)));}});
+  var lh=document.querySelector(".legend-head span"); if(lh)lh.textContent=TT("車種圖例","Train types");
+  var cap=document.querySelector(".legend .cap"); if(cap)cap.textContent=TT("數字 = 該車種而家行駛中班次","Number = trains of this type now running");
+  setText("drawerHandleTxt",TT("收起面板","Hide panel")); var uh=document.getElementById("uiHint"); if(uh)uh.innerHTML=TT("凌晨高鐵大多收車，但 K／Z／T 臥鋪車正橫越全國 — 將時間拉去 <b>03:00</b>，就睇到普速車點樣撐起成張夜間地圖。","Most high-speed trains stop overnight, but K/Z/T sleeper trains cross the country — drag the time to <b>03:00</b> to see conventional trains carrying the night map.");
   var mn=document.getElementById("mapNote");
-  if(mn){var cb=mn.querySelector("button"); mn.innerHTML=""; if(cb)mn.appendChild(cb); var s=document.createElement("span"); s.innerHTML=L("<strong>點樣推算？</strong> 用每班車嘅停站時刻 + 車站座標，喺上一站同下一站之間按時間插值。有真實線形數據嘅班次（約四分之三）會沿鐵路線形行；其餘維持直線插值。晚點、臨時停運唔會反映 — 呢個係「應該喺邊」，唔係真 GPS。低倍率時車點會聚合做數字圓點；放大後撳車點睇詳情、撳灰色車站細點睇出發板。","<strong>How is this estimated?</strong> Each train is interpolated between stops using its timetable and station coordinates. About three quarters follow real track geometry; the rest use straight lines. Delays and cancellations are not reflected — this is where a train should be, not live GPS. At low zoom trains cluster into numbered bubbles; zoom in and tap a train for details or a grey station dot for its departure board."); mn.appendChild(s); var nc=document.getElementById("mapNoteClose"); if(nc)nc.addEventListener("click",function(){mn.style.display="none"});}
+  if(mn){var cb=mn.querySelector("button"); mn.innerHTML=""; if(cb)mn.appendChild(cb); var s=document.createElement("span"); s.innerHTML=TT("<strong>點樣推算？</strong> 用每班車嘅停站時刻 + 車站座標，喺上一站同下一站之間按時間插值。有真實線形數據嘅班次（約四分之三）會沿鐵路線形行；其餘維持直線插值。晚點、臨時停運唔會反映 — 呢個係「應該喺邊」，唔係真 GPS。低倍率時車點會聚合做數字圓點；放大後撳車點睇詳情、撳灰色車站細點睇出發板。","<strong>How is this estimated?</strong> Each train is interpolated between stops using its timetable and station coordinates. About three quarters follow real track geometry; the rest use straight lines. Delays and cancellations are not reflected — this is where a train should be, not live GPS. At low zoom trains cluster into numbered bubbles; zoom in and tap a train for details or a grey station dot for its departure board."); mn.appendChild(s); var nc=document.getElementById("mapNoteClose"); if(nc)nc.addEventListener("click",function(){mn.style.display="none"});}
   var hb=document.getElementById("howBox");
-  if(hb){var dm=document.getElementById("dataMeta"); var metaTxt=dm?dm.textContent:""; hb.innerHTML='<button type="button" class="panel-close" id="howClose" aria-label="Close">✕</button>'+L("<strong>全國版數據同限制</strong><br>• 班次數據：開源 GTFS 數據集 chinese-railway-gtfs（由 12306 公開時刻表整理），<span id=\"dataMeta\">"+metaTxt+"</span>，已烘焙入頁面。<br>• 開行日：按 GTFS 日曆歸納為「逢星期幾開」；個別加開、停運未必反映。跨午夜班次有處理。<br>• 線形：來自同一數據集 shapes.txt；11,846 班入面 8,779 班（約 74%）有線形，其餘用直線插值。<br>• 底圖：OpenStreetMap；冇網絡時自動轉用內置示意地圖。","<strong>Data &amp; limitations</strong><br>• Timetable: open GTFS dataset chinese-railway-gtfs (from public 12306 timetables), <span id=\"dataMeta\">"+metaTxt+"</span>, baked into this page.<br>• Service days are generalised to weekday patterns; extra or cancelled services may not be reflected. Overnight trains are handled.<br>• Track geometry from the same dataset: 8,779 of 11,846 trains (about 74%) follow real lines; the rest use straight interpolation.<br>• Basemap: OpenStreetMap; an offline schematic map is used when there is no network."); document.getElementById("howClose").addEventListener("click",function(){hb.style.display="none"});}
+  if(hb){var dm=document.getElementById("dataMeta"); var metaTxt=dm?dm.textContent:""; hb.innerHTML='<button type="button" class="panel-close" id="howClose" aria-label="Close">✕</button>'+TT("<strong>全國版數據同限制</strong><br>• 班次數據：開源 GTFS 數據集 chinese-railway-gtfs（由 12306 公開時刻表整理），<span id=\"dataMeta\">"+metaTxt+"</span>，已烘焙入頁面。<br>• 開行日：按 GTFS 日曆歸納為「逢星期幾開」；個別加開、停運未必反映。跨午夜班次有處理。<br>• 線形：來自同一數據集 shapes.txt；11,846 班入面 8,779 班（約 74%）有線形，其餘用直線插值。<br>• 底圖：OpenStreetMap；冇網絡時自動轉用內置示意地圖。","<strong>Data &amp; limitations</strong><br>• Timetable: open GTFS dataset chinese-railway-gtfs (from public 12306 timetables), <span id=\"dataMeta\">"+metaTxt+"</span>, baked into this page.<br>• Service days are generalised to weekday patterns; extra or cancelled services may not be reflected. Overnight trains are handled.<br>• Track geometry from the same dataset: 8,779 of 11,846 trains (about 74%) follow real lines; the rest use straight interpolation.<br>• Basemap: OpenStreetMap; an offline schematic map is used when there is no network."); document.getElementById("howClose").addEventListener("click",function(){hb.style.display="none"});}
   applyThemeLabel(); updateBadge();
   lastListKey=""; lastDetailMinute=-1; lastBoardMinute=-1;
   if(typeof render==="function")render();
@@ -1034,11 +1045,11 @@ function applyLang(){
   });
   var dh=document.getElementById("drawerHandle"), sb=document.getElementById("sidebar");
   if(dh&&sb){
-    if(window.innerWidth<=900){sb.classList.add("drawer-collapsed"); dh.setAttribute("aria-expanded","false"); setText("drawerHandleTxt",L("展開面板 · 車次列表","Show panel · train list"));}
+    if(window.innerWidth<=900){sb.classList.add("drawer-collapsed"); dh.setAttribute("aria-expanded","false"); setText("drawerHandleTxt",TT("展開面板 · 車次列表","Show panel · train list"));}
     dh.addEventListener("click",function(){
       var collapsed=sb.classList.toggle("drawer-collapsed");
       dh.setAttribute("aria-expanded",collapsed?"false":"true");
-      setText("drawerHandleTxt",collapsed?L("展開面板 · 車次列表","Show panel · train list"):L("收起面板","Hide panel"));
+      setText("drawerHandleTxt",collapsed?TT("展開面板 · 車次列表","Show panel · train list"):TT("收起面板","Hide panel"));
       if(map)setTimeout(function(){map.invalidateSize()},60);
     });
   }
