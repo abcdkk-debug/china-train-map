@@ -10,7 +10,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f4f5f3;--panel:#ffffff;--panel2:#eef1ee;--text:#161a17;--muted:#6b7570;--line:#dde2dd;--red:#d92323;--blue:#2563eb;--shadow:0 10px 30px rgba(0,0,0,.12)}
-@media(prefers-color-scheme:dark){:root{--bg:#0f1210;--panel:#171b18;--panel2:#1f2521;--text:#eef2ee;--muted:#9aa79e;--line:#2a332c;--shadow:0 10px 30px rgba(0,0,0,.4)}}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1210;--panel:#171b18;--panel2:#1f2521;--text:#eef2ee;--muted:#9aa79e;--line:#2a332c;--shadow:0 10px 30px rgba(0,0,0,.4)}}
+:root[data-theme="dark"]{--bg:#0f1210;--panel:#171b18;--panel2:#1f2521;--text:#eef2ee;--muted:#9aa79e;--line:#2a332c;--shadow:0 10px 30px rgba(0,0,0,.4)}
+:root[data-theme="dark"] .leaflet-tile-pane{filter:brightness(.72) invert(1) contrast(.9) hue-rotate(180deg) saturate(.35) brightness(.9)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .leaflet-tile-pane{filter:brightness(.72) invert(1) contrast(.9) hue-rotate(180deg) saturate(.35) brightness(.9)}}
+:root[data-theme="dark"] .leaflet-container{background:#111}
+.top-actions{display:flex;gap:6px;align-items:center;flex:0 0 auto}
+.pill-btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:999px;padding:5px 10px;font-size:12px;font-weight:800;cursor:pointer;min-height:32px;white-space:nowrap}
+.pill-btn:hover{border-color:var(--red);color:var(--red)}
+.drawer-handle{display:none}
+@media(max-width:900px){.drawer-handle{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:none;border-bottom:1px solid var(--line);background:var(--panel2);color:var(--text);font-weight:800;font-size:13px;padding:10px;cursor:pointer;min-height:44px}.drawer-handle::before{content:"";width:44px;height:5px;border-radius:99px;background:var(--muted);opacity:.6;position:absolute;top:6px}.sidebar{position:relative}.sidebar.drawer-collapsed .controls,.sidebar.drawer-collapsed .list-head,.sidebar.drawer-collapsed .list,.sidebar.drawer-collapsed .how{display:none}.sidebar.drawer-collapsed .detail{display:none}.sidebar.drawer-collapsed .detail.open{display:block}}
 *{box-sizing:border-box}html,body{height:100%}body{margin:0;font-family:"Noto Sans TC",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text)}
 button,input,select{min-height:40px}
 a{color:var(--blue)}
@@ -24,6 +33,7 @@ a{color:var(--blue)}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--red);animation:pulse 1.2s infinite;flex:0 0 auto}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(217,35,35,.5)}70%{box-shadow:0 0 0 7px rgba(217,35,35,0)}100%{box-shadow:0 0 0 0 rgba(217,35,35,0)}}
 @media(prefers-reduced-motion:reduce){.dot{animation:none}}
+.ver-badge{background:var(--panel2);border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:4px 8px;font-size:11px;font-weight:700;font-family:"IBM Plex Mono",monospace;white-space:nowrap;flex:0 0 auto}
 .clock{margin-left:auto;text-align:right;flex:0 0 auto}
 .clock .time{font-family:"IBM Plex Mono",monospace;font-size:17px;font-weight:700;line-height:1}
 .clock .sub{font-size:10px;color:var(--muted);margin-top:2px;white-space:nowrap}
@@ -70,6 +80,15 @@ input[type=range]{flex:1;accent-color:var(--red);min-height:40px}
 .chip{border:1px solid var(--line);background:transparent;color:var(--text);border-radius:999px;padding:7px 11px;font-size:12px;font-weight:700;cursor:pointer;min-height:36px;display:inline-flex;align-items:center;gap:6px}
 .chip i{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
 .chip.active{background:var(--red);color:#fff;border-color:var(--red)}
+.od{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+.od-row{display:flex;gap:6px;align-items:center}
+.od-input{flex:1;min-width:0;border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:9px 10px;font-size:14px;color:var(--text)}
+.od-swap{flex:0 0 auto;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:10px;width:40px;padding:0;font-size:16px;cursor:pointer}
+.od-swap:hover{border-color:var(--red);color:var(--red)}
+.od-head{font-size:12.5px;color:var(--muted);line-height:1.6;margin-top:10px}
+.od-msg{font-size:13px;line-height:1.65;color:var(--muted);margin-top:10px}
+.od-msg b{color:var(--text)}
+.copy-msg{font-size:12px;color:var(--muted);align-self:center;word-break:break-all}
 .list-head{padding:10px 14px 0;font-size:12px;color:var(--muted);line-height:1.5}
 .list{overflow:auto;padding:10px;display:flex;flex-direction:column;gap:8px}
 .train-card{display:block;flex:0 0 auto;height:auto;border:1px solid var(--line);border-radius:14px;padding:11px 12px;cursor:pointer;background:var(--panel);text-align:left;width:100%;color:var(--text)}
@@ -99,6 +118,16 @@ input[type=range]{flex:1;accent-color:var(--red);min-height:40px}
 .board-row .b-no i{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
 .board-row .b-to{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .board-row .b-in{margin-left:auto;color:var(--muted);font-size:12px;white-space:nowrap}
+.stats-h{font-size:13px;margin:14px 0 0;color:var(--text)}
+.stats-chart{display:flex;align-items:flex-end;gap:2px;height:110px;margin-top:8px;border-bottom:1px solid var(--line)}
+.sc-col{flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;height:100%}
+.sc-val{height:13px;font-size:9px;font-family:"IBM Plex Mono",monospace;text-align:center;color:var(--muted);white-space:nowrap;line-height:13px}
+.sc-bar{background:var(--blue);opacity:.7;border-radius:2px 2px 0 0}
+.sc-col.peak .sc-bar{background:var(--text);opacity:1}
+.sc-col.now .sc-bar{background:var(--red);opacity:1}
+.sc-hours{display:flex;gap:2px;margin-top:3px}
+.sc-hours span{flex:1 1 0;min-width:0;font-size:9px;color:var(--muted);font-family:"IBM Plex Mono",monospace}
+.rank-row .r-rank{font-family:"IBM Plex Mono",monospace;font-weight:700;color:var(--muted);min-width:20px;text-align:right}
 .stop-wrap{max-height:300px;overflow:auto;margin-top:6px}
 .stop-table{width:100%;border-collapse:collapse;font-size:13px}
 .stop-table th{text-align:left;color:var(--muted);font-weight:600;padding:6px 4px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--panel)}
@@ -109,8 +138,9 @@ input[type=range]{flex:1;accent-color:var(--red);min-height:40px}
 .how strong{color:var(--text)}
 .train-layer{pointer-events:none}
 .leaflet-popup-content{font-family:"Noto Sans TC",sans-serif;line-height:1.6}
-@media(max-width:900px){.layout{grid-template-columns:1fr}.map-wrap{min-height:52dvh;height:52dvh}.sidebar{border-left:none;border-top:1px solid var(--line)}.list{overflow:visible}.detail{max-height:none}.clock{margin-left:auto}.clock .sub{display:none}.topbar{gap:6px;padding:5px 8px;flex-wrap:wrap}.brand p{display:none}.stats{order:3}.stat{padding:3px 6px}.map-filter{left:54px;right:10px;max-width:calc(100% - 64px);border-radius:14px}.legend{display:none}}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.map-wrap{min-height:58dvh;height:58dvh}.sidebar{border-left:none;border-top:1px solid var(--line)}.list{overflow:visible}.detail{max-height:none}.clock{margin-left:auto}.clock .sub{display:none}.topbar{gap:6px;padding:5px 8px;flex-wrap:wrap}.brand p{display:none}.stats{order:3}.stat{padding:3px 6px}.map-filter{left:54px;right:10px;max-width:calc(100% - 64px);border-radius:14px}.legend{display:none}}
 @media(max-width:560px){.brand h1{font-size:13px}.live-badge{font-size:10px;padding:3px 6px}.clock .time{font-size:15px}}
+@media(max-width:900px){.ver-badge{display:none}.stats .stat:nth-child(2),.stats .stat:nth-child(3){display:none}.stats{order:0}.topbar{flex-wrap:wrap;gap:4px 6px;padding:4px 6px;min-height:0}.clock{margin-left:auto}.brand .logo{width:24px;height:24px;font-size:12px}.brand h1{font-size:12.5px;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}.live-badge{font-size:9px;padding:2px 5px}.top-actions{gap:4px}.top-actions .pill-btn{padding:3px 6px;font-size:10px;min-height:26px}.clock .time{font-size:12px}.stat{padding:2px 5px}.stat b{font-size:12px}.stat span{font-size:9px}}
 </style>
 </head>
 <body>
@@ -118,20 +148,31 @@ input[type=range]{flex:1;accent-color:var(--red);min-height:40px}
   <div class="brand">
     <div class="logo">鐵</div>
     <div>
-      <h1>中國列車 · 全國推算位置地圖</h1>
-      <p>時刻表插值推算 · 非官方 GPS</p>
+      <h1 id="uiTitle">中國列車 · 全國推算位置地圖</h1>
+      <p id="uiSubtitle">時刻表插值推算 · 非官方 GPS</p>
     </div>
   </div>
   <span class="live-badge" id="liveBadge"><span class="dot"></span> LIVE · 中國時間</span>
   <div class="stats">
     <div class="stat"><b id="statRunning">—</b><span id="statRunningLabel">行駛中</span></div>
-    <div class="stat"><b id="statTotal">—</b><span>圖定班次</span></div>
-    <div class="stat"><b id="statStations">—</b><span>車站</span></div>
+    <div class="stat"><b id="statTotal">—</b><span id="statTotalLabel">圖定班次</span></div>
+    <div class="stat"><b id="statStations">—</b><span id="statStationsLabel">車站</span></div>
   </div>
-  <span id="verBadge" title="以最後更新日期作為版本號" style="display:inline-flex;align-items:center;padding:4px 8px;border:1px solid var(--line);border-radius:999px;font-size:11px;font-weight:700;color:#94a3b8;white-space:nowrap;flex:0 0 auto">版本 —</span>
-  <script>(function(){try{var d=new Date(document.lastModified);if(isNaN(d.getTime()))return;var s=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).format(d);document.getElementById('verBadge').textContent='版本 '+s;}catch(e){}})();</script>
+  <span class="ver-badge" id="verBadge">版本 —</span><div class="top-actions"><button type="button" class="pill-btn" id="btnLang" aria-label="Switch language">EN</button><button type="button" class="pill-btn" id="btnTheme" aria-label="切換深色模式">🌙 深色</button></div>
   <div class="clock"><div class="time" id="clock">--:--:--</div><div class="sub">Asia/Shanghai (UTC+8)</div></div>
 </header>
+<script>
+(function(){
+  var el=document.getElementById("verBadge");
+  if(!el)return;
+  var d=new Date(document.lastModified);
+  if(isNaN(d.getTime()))return;
+  var parts=new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Shanghai",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(d);
+  var y="",m="",dd="";
+  parts.forEach(function(p){if(p.type==="year")y=p.value;else if(p.type==="month")m=p.value;else if(p.type==="day")dd=p.value});
+  if(y&&m&&dd){el.dataset.date=y+"-"+m+"-"+dd;el.textContent="版本 "+y+"-"+m+"-"+dd;}
+})();
+</script>
 
 <div class="layout">
   <section class="map-wrap">
@@ -141,7 +182,7 @@ input[type=range]{flex:1;accent-color:var(--red);min-height:40px}
     <div class="map-note" id="mapNote"><button type="button" class="panel-close" id="mapNoteClose" aria-label="關閉「點樣推算」說明">✕</button><strong>點樣推算？</strong> 用每班車嘅停站時刻 + 車站座標，喺上一站同下一站之間按時間插值。有真實線形數據嘅班次（約四分之三）會沿鐵路線形行，唔再直線切過山水；其餘班次維持直線插值。晚點、臨時停運唔會反映 — 呢個係「應該喺邊」，唔係真 GPS。低倍率時車點會聚合做數字圓點，撳落去會放大；放大後撳車點睇詳情、撳灰色車站細點睇嗰個站嘅出發板。</div>
   </section>
 
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebar"><button type="button" class="drawer-handle" id="drawerHandle" aria-expanded="true">☰ <span id="drawerHandleTxt">收起面板</span></button>
     <div class="controls">
       <h2>時間控制</h2>
       <div class="time-row">
@@ -155,11 +196,25 @@ input[type=range]{flex:1;accent-color:var(--red);min-height:40px}
         <button class="btn speed active" data-speed="60">60×</button>
         <button class="btn speed" data-speed="600">600×</button>
       </div>
-      <p style="font-size:12px;color:var(--muted);line-height:1.6;margin:10px 0 0">凌晨高鐵大多收車，但 K／Z／T 臥鋪車正橫越全國 — 將時間拉去 <b>03:00</b>，就睇到普速車點樣撐起成張夜間地圖。</p>
+      <p id="uiHint" style="font-size:12px;color:var(--muted);line-height:1.6;margin:10px 0 0">凌晨高鐵大多收車，但 K／Z／T 臥鋪車正橫越全國 — 將時間拉去 <b>03:00</b>，就睇到普速車點樣撐起成張夜間地圖。</p>
       <input class="search" id="search" placeholder="搜尋車次或車站，例如 G1、K105、香港西九龍…" aria-label="搜尋車次或車站">
       <div class="filters">
         <button class="chip" id="chipShowAll">顯示埋未開出／已到達</button>
       </div>
+      <div class="od">
+        <h2>直達車搜尋</h2>
+        <div class="od-row">
+          <input class="od-input" id="odFrom" list="stationList" placeholder="起點站，如 武漢" aria-label="起點站">
+          <button type="button" class="od-swap" id="odSwap" aria-label="交換起點同終點">⇄</button>
+          <input class="od-input" id="odTo" list="stationList" placeholder="終點站，如 廣州南" aria-label="終點站">
+        </div>
+        <datalist id="stationList"></datalist>
+        <div class="btn-row">
+          <button class="btn primary" id="odSearch">搜尋直達車</button>
+        </div>
+        <div id="odResults" aria-live="polite"></div>
+      </div>
+      <button type="button" class="btn" id="btnStats" style="width:100%;margin-top:12px" aria-expanded="false">📊 全國數據 · 流量曲線＋最繁忙車站</button>
     </div>
 
     <div class="list-head" id="listHead"></div>
@@ -168,6 +223,8 @@ input[type=range]{flex:1;accent-color:var(--red);min-height:40px}
     <div class="detail" id="detail"></div>
 
     <div class="detail" id="stationPanel"></div>
+
+    <div class="detail" id="statsPanel"></div>
 
     <div class="how" id="howBox">
       <button type="button" class="panel-close" id="howClose" aria-label="關閉「全國版數據同限制」">✕</button>
@@ -260,6 +317,48 @@ TRAINS.forEach(function(tr){
   }
 });
 ST_DEPS.forEach(function(a){a.sort(function(x,y){return x.t-y.t})});
+// Station → trains index for the origin→destination search: for each station,
+// every train stopping there with its stop index, so an OD query only scans
+// the trains serving the origin station instead of all 11,846 trains.
+var ST_TRAINS=ST.map(function(){return[]});
+TRAINS.forEach(function(tr){
+  for(var i=0;i<tr.stops.length;i++)ST_TRAINS[tr.stops[i].s].push({tr:tr,i:i});
+});
+// Station names in the data are Simplified; let users type common Traditional
+// characters too by normalising both sides before comparing.
+var T2S={"漢":"汉","廣":"广","東":"东","鐵":"铁","龍":"龙","門":"门","長":"长","慶":"庆","鄭":"郑","濟":"济","寧":"宁","瀋":"沈","陽":"阳","蘭":"兰","烏":"乌","魯":"鲁","齊":"齐","爾":"尔","濱":"滨","綏":"绥","遼":"辽","錦":"锦","盤":"盘","營":"营","連":"连","雲":"云","貴":"贵","開":"开","許":"许","駐":"驻","馬":"马","陝":"陕","寶":"宝","雞":"鸡","滬":"沪","蘇":"苏","錫":"锡","鎮":"镇","揚":"扬","蕪":"芜","蚌":"蚌","滁":"滁","廬":"庐","豐":"丰","臺":"台","灣":"湾","廈":"厦","贛":"赣","撫":"抚","鷹":"鹰","萍":"萍","鄉":"乡","婁":"娄","懷":"怀","凱":"凯","裡":"里","銅":"铜","畢":"毕","節":"节","麗":"丽","臨":"临","滄":"沧","雙":"双","納":"纳","騰":"腾","衝":"冲","縣":"县","區":"区","莊":"庄","溝":"沟","嶺":"岭","鳳":"凤","張":"张","儀":"仪","隴":"陇","瀘":"泸","黔":"黔","渝":"渝","蓉":"蓉","綿":"绵","瀏":"浏","醴":"醴","攸":"攸","茶":"茶","陵":"陵","炎":"炎","井":"井","岡":"冈","川":"川","峽":"峡","都":"都","墊":"垫","梁":"梁","萬":"万","涪":"涪","彭":"彭","鄰":"邻","橋":"桥","島":"岛","頭":"头","關":"关","黃":"黄","羅":"罗","會":"会","賀":"贺","鐘":"钟","膠":"胶","濰":"潍","鄒":"邹","棗":"枣","蕭":"萧","離":"离","萊":"莱","煙":"烟","榮":"荣","棲":"栖","遠":"远","興":"兴","紹":"绍","樂":"乐","崗":"岗","嶼":"屿","壩":"坝","灘":"滩","瀝":"沥","檳":"槟","欖":"榄","巖":"岩","廟":"庙","觀":"观","楊":"杨","蓋":"盖","峯":"峰","達":"达"};
+function normName(s){var out="";for(var i=0;i<s.length;i++)out+=T2S[s[i]]||s[i];return out}
+var ST_BY_NAME={}, ST_NORM=[];
+ST.forEach(function(s,i){ST_BY_NAME[s[0]]=i;ST_NORM.push(normName(s[0]))});
+function resolveStation(raw){
+  var q=(raw||"").trim();if(!q)return -1;
+  if(ST_BY_NAME[q]!==undefined)return ST_BY_NAME[q];
+  var nq=normName(q),found=-1,matches=0;
+  for(var i=0;i<ST.length;i++){
+    if(ST_NORM[i]===nq)return i;
+  }
+  for(var j=0;j<ST.length;j++){
+    if(ST_NORM[j].indexOf(nq)===0||ST_NORM[j].indexOf(nq)>-1){found=j;matches++}
+  }
+  return matches===1?found:-1;
+}
+// Direct trains from station a to station b (a before b in the stop order)
+// whose service day is dayIdx. Sorted by departure time at a.
+function directTrains(a,b,dayIdx){
+  var out=[],list=ST_TRAINS[a];
+  for(var k=0;k<list.length;k++){
+    var e=list[k],tr=e.tr;
+    if(!((tr.mask>>dayIdx)&1))continue;
+    for(var j=e.i+1;j<tr.stops.length;j++){
+      if(tr.stops[j].s===b){
+        out.push({tr:tr,dep:tr.stops[e.i].t,arr:tr.stops[j].t});
+        break;
+      }
+    }
+  }
+  out.sort(function(x,y){return x.dep-y.dep||x.arr-y.arr});
+  return out;
+}
 // Departures from station idx in [t, t+win) minutes, as absolute minutes from
 // today's 00:00 — checks today's, yesterday's (post-midnight legs) and
 // tomorrow's (window crossing midnight) service instances.
@@ -513,10 +612,17 @@ try{
 }catch(e){buildFallback()}
 // ---------- State / UI ----------
 var isLive=true, playing=false, speed=60, simMinutes=720, selected=null, visibleTypes=null, showAll=false;
+var LANG="zh"; try{LANG=localStorage.getItem("ctm-lang")||"zh"}catch(e){}
+if(LANG!=="en")LANG="zh";
+function L(zh,en){return LANG==="en"?en:zh}
+var TYPE_EN={G:"High-speed",D:"EMU",C:"Intercity",S:"Suburban",Z:"Express",T:"Fast",K:"Rapid",Y:"Tourist",N:"Conventional"};
+function TN(k){return LANG==="en"?(TYPE_EN[k]||TYPES[k].name):TYPES[k].name}
+function applyThemeLabel(){var b=document.getElementById("btnTheme");if(!b)return;var dark=document.documentElement.getAttribute("data-theme")==="dark"||(!document.documentElement.getAttribute("data-theme")&&window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches);b.textContent=dark?L("☀️ 淺色","☀️ Light"):L("🌙 深色","🌙 Dark")}
+
 var stationSel=null, lastBoardMinute=-1;
 function isTypeVisible(k){return visibleTypes===null||!!visibleTypes[k]}
 function filterKey(){return visibleTypes===null?"all":TYPE_ORDER.filter(function(k){return visibleTypes[k]}).join("")}
-function filterLabel(){return visibleTypes===null?"所有車種":TYPE_ORDER.filter(function(k){return visibleTypes[k]}).map(function(k){return k+" "+TYPES[k].name}).join("＋")}
+function filterLabel(){return visibleTypes===null?L("所有車種","All types"):TYPE_ORDER.filter(function(k){return visibleTypes[k]}).map(function(k){return k+" "+TN(k)}).join(" + ")}
 function setFilter(type){
   var present={};TRAINS.forEach(function(tr){present[tr.type]=true});
   var presentKeys=TYPE_ORDER.filter(function(k){return present[k]});
@@ -581,9 +687,53 @@ document.querySelectorAll(".speed").forEach(function(b){b.addEventListener("clic
 document.getElementById("chipShowAll").addEventListener("click",function(){showAll=!showAll;this.classList.toggle("active",showAll);lastListKey="";renderList();});
 document.getElementById("mapNoteClose").addEventListener("click",function(){document.getElementById("mapNote").style.display="none";});
 document.getElementById("howClose").addEventListener("click",function(){document.getElementById("howBox").style.display="none";});
-document.addEventListener("keydown",function(e){if(e.key==="Escape"){if(selected)deselectTrain();if(stationSel!==null)closeStation();}});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"){if(selected)deselectTrain();if(stationSel!==null)closeStation();if(typeof statsOpen!=="undefined"&&statsOpen)closeStats();}});
 document.getElementById("search").addEventListener("input",function(){lastListKey="";renderList();});
-function updateBadge(){var b=document.getElementById("liveBadge");b.innerHTML=isLive?'<span class="dot"></span> LIVE · 中國時間':'<span class="dot" style="background:#d97706;animation:none"></span> 模擬時間 · 非 LIVE';}
+// ---------- Origin → destination direct-train search ----------
+(function(){
+  var dl=document.getElementById("stationList");
+  var opts="";
+  for(var i=0;i<ST.length;i++)opts+='<option value="'+ST[i][0]+'"></option>';
+  dl.innerHTML=opts;
+  var fromEl=document.getElementById("odFrom"), toEl=document.getElementById("odTo"),
+      resEl=document.getElementById("odResults");
+  document.getElementById("odSwap").addEventListener("click",function(){
+    var v=fromEl.value;fromEl.value=toEl.value;toEl.value=v;fromEl.focus();
+  });
+  function durTxt(mins){var h=Math.floor(mins/60),m=mins%60;return LANG==="en"?(h>0?("Journey "+h+" h"+(m?" "+m+" min":"")):("Journey "+m+" min")):(h>0?("車程 "+h+" 小時"+(m?" "+m+" 分":"")):("車程 "+m+" 分鐘"))}
+  function runSearch(){
+    var a=resolveStation(fromEl.value), b=resolveStation(toEl.value);
+    if(a<0||b<0){
+      resEl.innerHTML='<p class="od-msg">'+L("搵唔到","Station not found: ")+(a<0?L("起點","origin"):L("終點","destination"))+' <b>'+(a<0?fromEl.value:toEl.value)+'</b>'+L(" — 試下打完整站名，或者喺下拉清單揀返個站。"," — try the full station name or pick from the suggestions.")+'</p>';
+      return;
+    }
+    if(a===b){resEl.innerHTML='<p class="od-msg">'+L("起點同終點係同一個站，揀兩個唔同嘅站先搜到車。","Origin and destination are the same station — pick two different stations.")+'</p>';return}
+    var dayIdx=chinaDate().getDay();
+    var res=directTrains(a,b,dayIdx);
+    if(!res.length){
+      resEl.innerHTML='<p class="od-msg">'+L("今日（星期","Today (")+(LANG==="en"?["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]:["日","一","二","三","四","五","六"])[dayIdx]+L("）冇直達車由 ",") no direct trains from ")+'<b>'+ST[a][0]+'</b>'+L(" 去 "," to ")+'<b>'+ST[b][0]+'</b>'+L("。可能要轉車，或者試下調轉方向、揀過第二個站。",". You may need a connection, or try the reverse direction.")+'</p>';
+      return;
+    }
+    var shown=res;
+    var rows=shown.map(function(r){
+      return '<button type="button" class="board-row" data-no="'+r.tr.no+'"><span class="b-time">'+fmtT(r.dep)+'</span><span class="b-no"><i style="background:'+TYPES[r.tr.type].color+'"></i>'+r.tr.no+'</span><span class="b-to">→ '+ST[b][0]+" "+fmtT(r.arr)+'</span><span class="b-in">'+durTxt(r.arr-r.dep)+" · "+TN(r.tr.type)+'</span></button>';
+    }).join("");
+    resEl.innerHTML='<div class="od-head">'+ST[a][0]+" → "+ST[b][0]+L("：今日共 "," : ")+res.length+L(" 班直達車，按起點開出時間排序。撳一班車睇詳情。"," direct trains today, sorted by departure. Tap one for details.")+"</div>"+'<div class="board-list">'+rows+"</div>";
+    resEl.querySelectorAll(".board-row").forEach(function(btn){btn.addEventListener("click",function(){selectTrain(btn.dataset.no,true)})});
+  }
+  document.getElementById("odSearch").addEventListener("click",runSearch);
+  [fromEl,toEl].forEach(function(el){el.addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();runSearch()}})});
+})();
+
+function trainShareUrl(no){return location.origin+location.pathname+"?train="+encodeURIComponent(no)}
+function copyTrainLink(no){
+  var url=trainShareUrl(no);
+  var msg=document.getElementById("copyMsg");
+  function done(ok){if(msg)msg.textContent=ok?L("已複製：","Copied: ")+url:L("複製失敗，請手動複製：","Copy failed, please copy manually: ")+url}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(function(){done(true)},function(){fallback()})}else fallback();
+  function fallback(){try{var ta=document.createElement("textarea");ta.value=url;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();var ok=document.execCommand("copy");document.body.removeChild(ta);done(ok)}catch(e){done(false)}}
+}
+function updateBadge(){var b=document.getElementById("liveBadge");b.innerHTML=isLive?('<span class="dot"></span> '+L('LIVE · 中國時間','LIVE · China time')):('<span class="dot" style="background:#d97706;animation:none"></span> '+L('模擬時間 · 非 LIVE','Simulated · not LIVE'));}
 function drawRoute(tr){
   if(fallback)return; // fallback draws route inside drawFallback
   routeGroup.clearLayers();
@@ -623,17 +773,19 @@ function refreshDetail(force){
   var local=pos?pos.local:simMinutes;
   var rows=tr.stops.map(function(s){
     var passed=local>s.t, isNext=pos&&pos.next&&s===pos.next;
-    return '<tr class="'+(isNext?"next":(passed?"passed":""))+'"><td>'+ST[s.s][0]+'</td><td style="font-family:monospace">'+fmtT(s.t)+'</td><td>'+(isNext?"下一站":(passed?"已過":""))+'</td></tr>';
+    return '<tr class="'+(isNext?"next":(passed?"passed":""))+'"><td>'+ST[s.s][0]+'</td><td style="font-family:monospace">'+fmtT(s.t)+'</td><td>'+(isNext?L("下一站","Next stop"):(passed?L("已過","Passed"):""))+'</td></tr>';
   }).join("");
   var where;
-  if(st==="run"&&pos)where="而家喺 <b>"+ST[pos.prev.s][0]+" → "+ST[pos.next.s][0]+"</b> 之間，呢段行咗 "+Math.round(pos.segP*100)+"% ，預定 "+fmtT(pos.next.t)+" 到 "+ST[pos.next.s][0]+"。";
-  else if(st==="wait")where="未開出，預定 "+fmtT(tr.dep)+" 由 "+tr.from+" 開出。";
-  else if(st==="done")where="已到達終點 "+tr.to+"（"+fmtT(tr.arr)+"）。";
-  else where="今日（星期規律推算）唔開行；開行日逢星期"+maskDays(tr.mask)+"。";
+  if(st==="run"&&pos)where=L("而家喺 <b>","Now between <b>")+ST[pos.prev.s][0]+" → "+ST[pos.next.s][0]+L("</b> 之間，呢段行咗 ","</b>, ")+Math.round(pos.segP*100)+L("% ，預定 ","% through this segment, due ")+fmtT(pos.next.t)+L(" 到 "," at ")+ST[pos.next.s][0]+L("。",".");
+  else if(st==="wait")where=L("未開出，預定 ","Not yet departed, scheduled ")+fmtT(tr.dep)+L(" 由 "," from ")+tr.from+L(" 開出。",".");
+  else if(st==="done")where=L("已到達終點 ","Arrived at ")+tr.to+" ("+fmtT(tr.arr)+")"+L("。",".");
+  else where=L("今日唔開行；開行日逢星期","Not running today; runs on ")+maskDays(tr.mask)+L("。",".");
   detailEl.className="detail open";
-  detailEl.innerHTML='<button type="button" class="detail-close" id="detailClose" aria-label="關閉詳情，返去全國總覽">✕</button><h3><span style="color:'+TYPES[tr.type].color+'">●</span> '+tr.no+" · "+TYPES[tr.type].name+'</h3><div class="sub">'+tr.from+" → "+tr.to+" ｜ "+fmtT(tr.dep)+" 開 · "+fmtT(tr.arr)+" 到 ｜ 全程 "+Math.floor((tr.arr-tr.dep)/60)+" 小時 "+Math.round((tr.arr-tr.dep)%60)+" 分鐘 ｜ 停 "+tr.stops.length+' 站<br>'+where+'</div><div class="progress"><i style="width:'+(pos?Math.round(pos.overall*100):(st==="done"?100:0))+'%;background:'+TYPES[tr.type].color+'"></i></div><div class="stop-wrap"><table class="stop-table"><tr><th>停站</th><th>時刻</th><th>狀態</th></tr>'+rows+"</table></div>"+(tr.arr>=1440?'<div class="sub">⁺¹ = 次日凌晨到達。</div>':"");
+  detailEl.innerHTML='<button type="button" class="detail-close" id="detailClose" aria-label="關閉詳情，返去全國總覽">✕</button><h3><span style="color:'+TYPES[tr.type].color+'">●</span> '+tr.no+" · "+TN(tr.type)+'</h3><div class="sub">'+tr.from+" → "+tr.to+" ｜ "+fmtT(tr.dep)+L(" 開 · "," dep · ")+fmtT(tr.arr)+L(" 到 ｜ 全程 "," arr ｜ Journey ")+Math.floor((tr.arr-tr.dep)/60)+L(" 小時 "," h ")+Math.round((tr.arr-tr.dep)%60)+L(" 分鐘 ｜ 停 "," min ｜ ")+tr.stops.length+L(' 站',' stops')+'<br>'+where+'</div><div class="btn-row" style="margin:10px 0 4px"><button type="button" class="btn primary" id="btnCopyLink">'+L("🔗 複製連結","🔗 Copy link")+'</button><span class="copy-msg" id="copyMsg" aria-live="polite"></span></div><div class="progress"><i style="width:'+(pos?Math.round(pos.overall*100):(st==="done"?100:0))+'%;background:'+TYPES[tr.type].color+'"></i></div><div class="stop-wrap"><table class="stop-table"><tr><th>'+L("停站","Stop")+'</th><th>'+L("時刻","Time")+'</th><th>'+L("狀態","Status")+'</th></tr>'+rows+"</table></div>"+(tr.arr>=1440?'<div class="sub">'+L("⁺¹ = 次日凌晨到達。","⁺¹ = arrives after midnight.")+'</div>':"");
   var closeBtn=document.getElementById("detailClose");
   if(closeBtn)closeBtn.addEventListener("click",function(){deselectTrain()});
+  var cpBtn=document.getElementById("btnCopyLink");
+  if(cpBtn)cpBtn.addEventListener("click",function(){copyTrainLink(tr.no)});
 }
 // ---------- Station departure board ----------
 function refreshStationBoard(){
@@ -643,11 +795,11 @@ function refreshStationBoard(){
   var entries=stationBoard(idx,simMinutes,todayDay,240);
   var rows=entries.slice(0,40).map(function(en){
     var d=en.d, mins=Math.round(en.abs-simMinutes);
-    var inTxt=mins<=1?"即將開出":(mins<60?"約 "+mins+" 分鐘後":"約 "+Math.floor(mins/60)+" 小時"+(mins%60?" "+(mins%60)+" 分":"")+"後");
-    return '<button type="button" class="board-row" data-no="'+d.no+'"><span class="b-time">'+fmt(en.abs)+(en.abs>=1440?" ⁺¹":"")+'</span><span class="b-no"><i style="background:'+TYPES[d.type].color+'"></i>'+d.no+'</span><span class="b-to">往 '+d.to+'</span><span class="b-in">'+inTxt+'</span></button>';
+    var inTxt=mins<=1?L("即將開出","Departing soon"):(mins<60?L("約 "+mins+" 分鐘後","in ~"+mins+" min"):L("約 "+Math.floor(mins/60)+" 小時"+(mins%60?" "+(mins%60)+" 分":"")+"後","in ~"+Math.floor(mins/60)+" h"+(mins%60?" "+(mins%60)+" min":"")));
+    return '<button type="button" class="board-row" data-no="'+d.no+'"><span class="b-time">'+fmt(en.abs)+(en.abs>=1440?" ⁺¹":"")+'</span><span class="b-no"><i style="background:'+TYPES[d.type].color+'"></i>'+d.no+'</span><span class="b-to">'+L("往 ","To ")+d.to+'</span><span class="b-in">'+inTxt+'</span></button>';
   }).join("");
   panel.className="detail open";
-  panel.innerHTML='<button type="button" class="detail-close" id="stationClose" aria-label="關閉出發板">✕</button><h3>'+ST[idx][0]+'站 · 出發板</h3><div class="sub">顯示時間 '+fmt(simMinutes)+' 起 4 小時內，喺呢個站開出／經過嘅列車（按時刻表推算），共 '+entries.length+' 班'+(entries.length>40?"，顯示首 40 班":"")+'。撳一班車可以跳去睇佢嘅詳情。</div>'+(rows?'<div class="board-list">'+rows+"</div>":'<p style="color:var(--muted);font-size:13px;line-height:1.6">呢段時間冇車喺呢個站開出／經過 — 試下將時間拉去日頭，或者揀個大站（例如武漢、廣州南）。</p>');
+  panel.innerHTML='<button type="button" class="detail-close" id="stationClose" aria-label="關閉出發板">✕</button><h3>'+ST[idx][0]+L('站 · 出發板',' Station · Departures')+'</h3><div class="sub">'+L("顯示時間 ","From ")+''+fmt(simMinutes)+L(' 起 4 小時內，喺呢個站開出／經過嘅列車（按時刻表推算），共 ',' — trains departing or passing this station in the next 4 hours (timetable estimate), ')+entries.length+L(' 班',' trains')+(entries.length>40?L("，顯示首 40 班",", showing first 40"):"")+L('。撳一班車可以跳去睇佢嘅詳情。','. Tap a train for details.')+'</div>'+(rows?'<div class="board-list">'+rows+"</div>":'<p style="color:var(--muted);font-size:13px;line-height:1.6">'+L("呢段時間冇車喺呢個站開出／經過 — 試下將時間拉去日頭，或者揀個大站（例如武漢、廣州南）。","No trains depart or pass here in this window — try daytime hours or a major station.")+'</p>');
   document.getElementById("stationClose").addEventListener("click",function(){closeStation()});
   panel.querySelectorAll(".board-row").forEach(function(b){b.addEventListener("click",function(){selectTrain(b.dataset.no,true)})});
 }
@@ -666,10 +818,97 @@ function closeStation(){
   if(fallback)drawFallback();
   else if(canvasLayer)canvasLayer._draw();
 }
+// ---------- National stats: 24h flow curve + busiest stations ----------
+// Computed from the baked-in timetable on demand (first open), then cached;
+// recomputed only when the displayed day (todayDay) changes. The flow curve
+// samples the running count at each hour mark, using the same rule as the
+// top-bar counter: today's instance, or yesterday's still running past
+// midnight. Station ranking counts every stop of every train that runs on
+// the displayed day.
+var statsOpen=false, statsCache=null, statsDay=-1, lastStatsHour=-1;
+function computeStats(day){
+  var hours=[],h,i;
+  var yday=(day+6)%7;
+  for(h=0;h<24;h++){
+    var t=h*60,n=0;
+    for(i=0;i<TRAINS.length;i++){
+      var tr=TRAINS[i];
+      if(((tr.mask>>day)&1)&&t>=tr.dep&&t<=tr.arr)n++;
+      else if(((tr.mask>>yday)&1)&&t+1440>=tr.dep&&t+1440<=tr.arr)n++;
+    }
+    hours.push(n);
+  }
+  var counts=new Array(ST.length);
+  for(i=0;i<ST.length;i++)counts[i]=0;
+  for(i=0;i<TRAINS.length;i++){
+    var t2=TRAINS[i];
+    if((t2.mask>>day)&1)for(var k=0;k<t2.stops.length;k++)counts[t2.stops[k].s]++;
+  }
+  var top=[];
+  for(i=0;i<ST.length;i++)if(counts[i]>0)top.push({idx:i,n:counts[i]});
+  top.sort(function(a,b){return b.n-a.n||a.idx-b.idx});
+  return {hours:hours,top:top.slice(0,10)};
+}
+function renderStats(){
+  var panel=document.getElementById("statsPanel");
+  if(!panel)return;
+  if(statsCache===null||statsDay!==todayDay){statsCache=computeStats(todayDay);statsDay=todayDay}
+  var hours=statsCache.hours,max=0,peakH=0,h;
+  for(h=0;h<24;h++)if(hours[h]>max){max=hours[h];peakH=h}
+  var nowH=Math.floor(simMinutes/60);if(nowH<0)nowH=0;if(nowH>23)nowH=23;
+  var cols=hours.map(function(n,hh){
+    var cls="sc-col"+(hh===peakH?" peak":"")+(hh===nowH?" now":"");
+    var val=(hh===peakH||hh===nowH)?n.toLocaleString("en-US"):"";
+    return '<div class="'+cls+'" title="'+(hh<10?"0":"")+hh+':00 約 '+n.toLocaleString("en-US")+' 班行駛中"><div class="sc-val">'+val+'</div><div class="sc-bar" style="height:'+Math.max(2,Math.round(n/max*92))+'px"></div></div>';
+  }).join("");
+  var hl="";for(h=0;h<24;h++)hl+="<span>"+(h%6===0?h:"")+"</span>";
+  var dayNames=LANG==="en"?["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]:["日","一","二","三","四","五","六"];
+  var rows=statsCache.top.map(function(e,i){
+    return '<button type="button" class="board-row rank-row" data-stn="'+e.idx+'"><span class="r-rank">'+(i+1)+'</span><span class="b-to">'+ST[e.idx][0]+L('站','')+'</span><span class="b-in">'+e.n.toLocaleString("en-US")+L(' 班次',' trains')+'</span></button>';
+  }).join("");
+  panel.className="detail open";
+  panel.innerHTML='<button type="button" class="detail-close" id="statsClose" aria-label="關閉全國數據">✕</button><h3>'+L('全國數據','National data')+'</h3>'
+    +'<div class="sub">'+L('星期','')+dayNames[todayDay]+L('（而家顯示緊嗰日）全日推算，數字由頁面入面嘅時刻表即場計出嚟。',' — full-day estimate for the displayed day, computed live from the timetable in this page.')+'</div>'
+    +'<h4 class="stats-h">'+L('24 小時流量 — 每個整點有幾多班車行駛中','24-hour flow — trains running at each hour')+'</h4>'
+    +'<div class="stats-chart">'+cols+'</div><div class="sc-hours">'+hl+'</div>'
+    +'<div class="sub">'+L('高峰 ','Peak ')+fmt(peakH*60)+L('：約 ',' : ~')+max.toLocaleString("en-US")+L(' 班；',' trains; ')+'<b style="color:var(--red)">'+L('紅色','red')+'</b>'+L('係顯示時間所屬嗰個鐘（',' marks the displayed hour (')+fmt(nowH*60)+L(' 時段，約 ',' slot, ~')+hours[nowH].toLocaleString("en-US")+L(' 班）。',' trains).')+'</div>'
+    +'<h4 class="stats-h">'+L('最繁忙車站 Top 10 — 當日停站班次','Busiest stations Top 10 — stops today')+'</h4>'
+    +'<div class="board-list" style="max-height:none">'+rows+'</div>'
+    +'<div class="sub">'+L('撳一個站，會飛去嗰個站並開佢嘅出發板。','Tap a station to fly there and open its departure board.')+'</div>';
+  document.getElementById("statsClose").addEventListener("click",function(){closeStats()});
+  panel.querySelectorAll(".rank-row").forEach(function(b){b.addEventListener("click",function(){
+    var idx=+b.dataset.stn;
+    closeStats();
+    if(map)map.flyTo([ST[idx][1],ST[idx][2]],Math.max(map.getZoom(),8),{duration:.8});
+    openStation(idx);
+  })});
+  lastStatsHour=nowH;
+}
+function openStats(){
+  statsOpen=true;
+  var btn=document.getElementById("btnStats");if(btn)btn.setAttribute("aria-expanded","true");
+  renderStats();
+}
+function closeStats(){
+  if(!statsOpen)return;
+  statsOpen=false;lastStatsHour=-1;
+  var btn=document.getElementById("btnStats");if(btn)btn.setAttribute("aria-expanded","false");
+  var panel=document.getElementById("statsPanel");
+  if(panel){panel.className="detail";panel.innerHTML=""}
+}
+function refreshStatsNow(){
+  if(!statsOpen)return;
+  var nowH=Math.floor(simMinutes/60);
+  if(statsDay!==todayDay||nowH!==lastStatsHour)renderStats();
+}
+(function(){
+  var btn=document.getElementById("btnStats");
+  if(btn)btn.addEventListener("click",function(){statsOpen?closeStats():openStats()});
+})();
 function maskDays(mask){
-  var names=["日","一","二","三","四","五","六"],out=[];
+  var names=LANG==="en"?["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]:["日","一","二","三","四","五","六"],out=[];
   for(var d=0;d<7;d++)if((mask>>d)&1)out.push(names[d]);
-  return out.length===7?"一至日（每日）":out.join("、");
+  return out.length===7?L("一至日（每日）","Daily"):out.join(LANG==="en"?", ":"、");
 }
 function matchesQuery(tr,q){
   if(!q)return true;
@@ -699,18 +938,18 @@ function renderList(){
   var total=items.length, shown=items.slice(0,100);
   var runningTotal=RUNNING.length, allRunningTotal=ALL_RUNNING.length;
   listHead.innerHTML=q
-    ?("搜尋「"+q+"」："+total+" 班符合"+(total>100?"，顯示首 100 班":"")+"（包括未開出／已到達）")
+    ?(L("搜尋「","Search \u201C")+q+L("」：","\u201D: ")+total+L(" 班符合"," trains match")+(total>100?L("，顯示首 100 班",", showing first 100"):"")+L("（包括未開出／已到達）"," (incl. not departed / arrived)"))
     :(showAll
-      ?("全部班次（"+filterLabel()+"）："+total+" 班，顯示首 100 班")
-      :("行駛中 "+runningTotal.toLocaleString("en-US")+" 班"+(visibleTypes!==null?"（已篩選："+filterLabel()+"；全部車種共 "+allRunningTotal.toLocaleString("en-US")+" 班）":"")+(total>100?"，顯示首 100 班":"")));
-  var pillTxt={run:'<span class="pill run">行駛中</span>',wait:'<span class="pill wait">未開出</span>',done:'<span class="pill done">已到達</span>',off:'<span class="pill off">今日不開行</span>'};
+      ?(L("全部班次（","All trains (")+filterLabel()+L("）："," ) : ")+total+L(" 班，顯示首 100 班"," trains, showing first 100"))
+      :(L("行駛中 ","Running ")+runningTotal.toLocaleString("en-US")+L(" 班"," trains")+(visibleTypes!==null?L("（已篩選："," (filtered: ")+filterLabel()+L("；全部車種共 ","; all types ")+allRunningTotal.toLocaleString("en-US")+L(" 班）"," )"):"")+(total>100?L("，顯示首 100 班",", showing first 100"):"")));
+  var pillTxt={run:'<span class="pill run">'+L("行駛中","Running")+'</span>',wait:'<span class="pill wait">'+L("未開出","Not departed")+'</span>',done:'<span class="pill done">'+L("已到達","Arrived")+'</span>',off:'<span class="pill off">'+L("今日不開行","Not today")+'</span>'};
   var html=shown.map(function(it){
     var tr=it.tr,pos=posAt(tr,simMinutes,todayDay);
-    var meta=it.st==="run"&&pos?(ST[pos.prev.s][0]+" → "+ST[pos.next.s][0]+" · 預定 "+fmtT(pos.next.t)+" 到下一站")
-      :(it.st==="wait"?"預定 "+fmtT(tr.dep)+" 開出":(it.st==="done"?"已於 "+fmtT(tr.arr)+" 到達 "+tr.to:"逢星期"+maskDays(tr.mask)+"開行"));
-    return '<button class="train-card'+(selected===tr.no?" selected":"")+'" data-no="'+tr.no+'"><div class="tc-top"><span class="tc-no"><i style="background:'+TYPES[tr.type].color+'"></i>'+tr.no+'</span>'+pillTxt[it.st]+'</div><div class="tc-route">'+tr.from+" → "+tr.to+'</div><div class="tc-meta">'+fmtT(tr.dep)+" – "+fmtT(tr.arr)+" · "+TYPES[tr.type].name+" · 停 "+tr.stops.length+" 站<br>"+meta+"</div>"+(pos?'<div class="progress"><i style="width:'+Math.round(pos.overall*100)+'%;background:'+TYPES[tr.type].color+'"></i></div>':"")+"</button>";
+    var meta=it.st==="run"&&pos?(ST[pos.prev.s][0]+" → "+ST[pos.next.s][0]+L(" · 預定 "," · due ")+fmtT(pos.next.t)+L(" 到下一站"," at next stop"))
+      :(it.st==="wait"?L("預定 ","Departs ")+fmtT(tr.dep)+L(" 開出",""):(it.st==="done"?L("已於 ","Arrived ")+fmtT(tr.arr)+L(" 到達 "," at ")+tr.to:L("逢星期","Runs ")+maskDays(tr.mask)+L("開行","")));
+    return '<button class="train-card'+(selected===tr.no?" selected":"")+'" data-no="'+tr.no+'"><div class="tc-top"><span class="tc-no"><i style="background:'+TYPES[tr.type].color+'"></i>'+tr.no+'</span>'+pillTxt[it.st]+'</div><div class="tc-route">'+tr.from+" → "+tr.to+'</div><div class="tc-meta">'+fmtT(tr.dep)+" – "+fmtT(tr.arr)+" · "+TN(tr.type)+L(" · 停 "," · ")+tr.stops.length+L(" 站"," stops")+"<br>"+meta+"</div>"+(pos?'<div class="progress"><i style="width:'+Math.round(pos.overall*100)+'%;background:'+TYPES[tr.type].color+'"></i></div>':"")+"</button>";
   }).join("");
-  listEl.innerHTML=html||'<p style="color:var(--muted);font-size:13px;padding:8px">冇符合嘅班次。試下改搜尋、車種，或者撳「顯示埋未開出／已到達」。</p>';
+  listEl.innerHTML=html||'<p style="color:var(--muted);font-size:13px;padding:8px">'+L("冇符合嘅班次。試下改搜尋、車種，或者撳「顯示埋未開出／已到達」。","No matching trains. Try a different search or type, or include not-departed / arrived trains.")+'</p>';
   listEl.querySelectorAll(".train-card").forEach(function(c){c.addEventListener("click",function(){selectTrain(c.dataset.no,true)})});
 }
 var lastDetailMinute=-1;
@@ -729,7 +968,7 @@ function render(){
   // Map + list show only the types picked in the filter; legend/overall counts stay on ALL_RUNNING.
   RUNNING=ALL_RUNNING.filter(function(it){return isTypeVisible(it.tr.type)});
   document.getElementById("statRunning").textContent=RUNNING.length.toLocaleString("en-US");
-  document.getElementById("statRunningLabel").textContent=visibleTypes===null?"行駛中":"顯示中（已篩選）";
+  document.getElementById("statRunningLabel").textContent=visibleTypes===null?L("行駛中","Running"):L("顯示中（已篩選）","Shown (filtered)");
   countSig=ALL_RUNNING.length+"/"+RUNNING.length+"|"+filterKey()+"|"+TYPE_ORDER.map(function(k){return typeCounts[k]||0}).join(",");
   TYPE_ORDER.forEach(function(k){var el=document.getElementById("lg-"+k);if(el)el.textContent=(typeCounts[k]||0).toLocaleString("en-US")});
   if(fallback)drawFallback();
@@ -738,6 +977,7 @@ function render(){
   var m=Math.floor(simMinutes);
   if(selected&&m!==lastDetailMinute){lastDetailMinute=m;refreshDetail(false)}
   if(stationSel!==null&&m!==lastBoardMinute){lastBoardMinute=m;refreshStationBoard()}
+  refreshStatsNow();
 }
 setInterval(function(){
   if(playing){simMinutes+=speed/60;if(simMinutes>=1440)simMinutes=0;slider.value=Math.floor(simMinutes)}
@@ -745,6 +985,85 @@ setInterval(function(){
 },1000);
 updateBadge();render();
 if(window.SHAPES_DATA)buildShapes();
+
+// ---------- Language / theme / mobile drawer ----------
+function setText(id,txt){var e=document.getElementById(id);if(e)e.textContent=txt}
+function applyLang(){
+  document.documentElement.lang=LANG==="en"?"en":"zh-Hant-HK";
+  setText("uiTitle",L("中國列車 · 全國推算位置地圖","China Trains · Live Map (Estimated)"));
+  setText("uiSubtitle",L("時刻表插值推算 · 非官方 GPS","Timetable interpolation · not official GPS"));
+  setText("btnLang",LANG==="en"?"中文":"EN"); setText("statTotalLabel",L("圖定班次","Scheduled")); setText("statStationsLabel",L("車站","Stations"));
+  var vb=document.getElementById("verBadge"); if(vb&&vb.dataset.date){vb.textContent=L("版本 ","Version ")+vb.dataset.date}
+  document.querySelectorAll(".controls h2").forEach(function(h,i){h.textContent=i===0?L("時間控制","Time controls"):L("直達車搜尋","Direct trains")});
+  setText("btnLive",L("回到 LIVE","Back to LIVE"));
+  var bp=document.getElementById("btnPlay"); if(bp)bp.textContent=playing?L("⏸ 暫停","⏸ Pause"):L("▶ 播放全日","▶ Play full day");
+  var se=document.getElementById("search"); if(se)se.placeholder=L("搜尋車次或車站，例如 G1、K105、香港西九龍…","Search train or station, e.g. G1, K105…");
+  setText("chipShowAll",L("顯示埋未開出／已到達","Include not-departed / arrived"));
+  var of=document.getElementById("odFrom"), ot=document.getElementById("odTo");
+  if(of)of.placeholder=L("起點站，如 武漢","From, e.g. Wuhan");
+  if(ot)ot.placeholder=L("終點站，如 廣州南","To, e.g. Guangzhou South");
+  setText("odSearch",L("搜尋直達車","Search direct trains"));
+  var bs=document.getElementById("btnStats"); if(bs)bs.textContent=L("📊 全國數據 · 流量曲線＋最繁忙車站","📊 National data · Flow & busiest stations");
+  var mf=document.querySelector(".mf-label"); if(mf)mf.textContent=L("只顯示：","Show:");
+  document.querySelectorAll("[data-ftype]").forEach(function(c){var k=c.dataset.ftype; if(k==="all")c.textContent=L("全部","All"); else {var dot=c.querySelector("i"); c.textContent=""; if(dot)c.appendChild(dot); c.appendChild(document.createTextNode(k+" "+TN(k)));}});
+  var lh=document.querySelector(".legend-head span"); if(lh)lh.textContent=L("車種圖例","Train types");
+  var cap=document.querySelector(".legend .cap"); if(cap)cap.textContent=L("數字 = 該車種而家行駛中班次","Number = trains of this type now running");
+  setText("drawerHandleTxt",L("收起面板","Hide panel")); var uh=document.getElementById("uiHint"); if(uh)uh.innerHTML=L("凌晨高鐵大多收車，但 K／Z／T 臥鋪車正橫越全國 — 將時間拉去 <b>03:00</b>，就睇到普速車點樣撐起成張夜間地圖。","Most high-speed trains stop overnight, but K/Z/T sleeper trains cross the country — drag the time to <b>03:00</b> to see conventional trains carrying the night map.");
+  var mn=document.getElementById("mapNote");
+  if(mn){var cb=mn.querySelector("button"); mn.innerHTML=""; if(cb)mn.appendChild(cb); var s=document.createElement("span"); s.innerHTML=L("<strong>點樣推算？</strong> 用每班車嘅停站時刻 + 車站座標，喺上一站同下一站之間按時間插值。有真實線形數據嘅班次（約四分之三）會沿鐵路線形行；其餘維持直線插值。晚點、臨時停運唔會反映 — 呢個係「應該喺邊」，唔係真 GPS。低倍率時車點會聚合做數字圓點；放大後撳車點睇詳情、撳灰色車站細點睇出發板。","<strong>How is this estimated?</strong> Each train is interpolated between stops using its timetable and station coordinates. About three quarters follow real track geometry; the rest use straight lines. Delays and cancellations are not reflected — this is where a train should be, not live GPS. At low zoom trains cluster into numbered bubbles; zoom in and tap a train for details or a grey station dot for its departure board."); mn.appendChild(s); var nc=document.getElementById("mapNoteClose"); if(nc)nc.addEventListener("click",function(){mn.style.display="none"});}
+  var hb=document.getElementById("howBox");
+  if(hb){var dm=document.getElementById("dataMeta"); var metaTxt=dm?dm.textContent:""; hb.innerHTML='<button type="button" class="panel-close" id="howClose" aria-label="Close">✕</button>'+L("<strong>全國版數據同限制</strong><br>• 班次數據：開源 GTFS 數據集 chinese-railway-gtfs（由 12306 公開時刻表整理），<span id=\"dataMeta\">"+metaTxt+"</span>，已烘焙入頁面。<br>• 開行日：按 GTFS 日曆歸納為「逢星期幾開」；個別加開、停運未必反映。跨午夜班次有處理。<br>• 線形：來自同一數據集 shapes.txt；11,846 班入面 8,779 班（約 74%）有線形，其餘用直線插值。<br>• 底圖：OpenStreetMap；冇網絡時自動轉用內置示意地圖。","<strong>Data &amp; limitations</strong><br>• Timetable: open GTFS dataset chinese-railway-gtfs (from public 12306 timetables), <span id=\"dataMeta\">"+metaTxt+"</span>, baked into this page.<br>• Service days are generalised to weekday patterns; extra or cancelled services may not be reflected. Overnight trains are handled.<br>• Track geometry from the same dataset: 8,779 of 11,846 trains (about 74%) follow real lines; the rest use straight interpolation.<br>• Basemap: OpenStreetMap; an offline schematic map is used when there is no network."); document.getElementById("howClose").addEventListener("click",function(){hb.style.display="none"});}
+  applyThemeLabel(); updateBadge();
+  lastListKey=""; lastDetailMinute=-1; lastBoardMinute=-1;
+  if(typeof render==="function")render();
+  if(selected&&BY_NO[selected])refreshDetail(true);
+  if(stationSel!==null)refreshStationBoard();
+  if(statsOpen)renderStats();
+}
+(function(){
+  var bl=document.getElementById("btnLang");
+  if(bl)bl.addEventListener("click",function(){LANG=LANG==="en"?"zh":"en"; try{localStorage.setItem("ctm-lang",LANG)}catch(e){} applyLang();});
+  var bt=document.getElementById("btnTheme");
+  if(bt)bt.addEventListener("click",function(){
+    var cur=document.documentElement.getAttribute("data-theme");
+    var isDark=cur==="dark"||(!cur&&window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches);
+    var next=isDark?"light":"dark";
+    document.documentElement.setAttribute("data-theme",next);
+    try{localStorage.setItem("ctm-theme",next)}catch(e){}
+    applyThemeLabel();
+  });
+  var dh=document.getElementById("drawerHandle"), sb=document.getElementById("sidebar");
+  if(dh&&sb){
+    if(window.innerWidth<=900){sb.classList.add("drawer-collapsed"); dh.setAttribute("aria-expanded","false"); setText("drawerHandleTxt",L("展開面板 · 車次列表","Show panel · train list"));}
+    dh.addEventListener("click",function(){
+      var collapsed=sb.classList.toggle("drawer-collapsed");
+      dh.setAttribute("aria-expanded",collapsed?"false":"true");
+      setText("drawerHandleTxt",collapsed?L("展開面板 · 車次列表","Show panel · train list"):L("收起面板","Hide panel"));
+      if(map)setTimeout(function(){map.invalidateSize()},60);
+    });
+  }
+  // restore saved theme early
+  try{var th=localStorage.getItem("ctm-theme"); if(th==="dark"||th==="light")document.documentElement.setAttribute("data-theme",th);}catch(e){}
+  applyLang();
+})();
+// Share link: ?train=<車次> selects that train on load (map flies to its
+// current estimated position; if it is not running, to its origin station,
+// and the detail panel states its status). No parameter → nothing selected,
+// as before. Unknown train numbers are ignored silently.
+(function(){
+  try{
+    var q=new URLSearchParams(location.search).get("train");
+    if(!q)return;
+    var no=q.trim().toUpperCase(), tr=BY_NO[no];
+    if(!tr)return;
+    selectTrain(no,false);
+    var pos=posAt(tr,simMinutes,todayDay);
+    if(map){
+      var target=pos?[pos.lat,pos.lng]:[ST[tr.stops[0].s][1],ST[tr.stops[0].s][2]];
+      map.flyTo(target,Math.max(map.getZoom(),7),{duration:.8});
+    }else if(fallback)drawFallback();
+  }catch(e){}
+})();
 </script>
 </body>
 </html>
